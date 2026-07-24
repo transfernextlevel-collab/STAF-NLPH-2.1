@@ -5006,8 +5006,12 @@ async function loadEmailMailboxList(){
     const d=await api(payload);
     if(!d||!d.success){
       if(d&&d.sessionExpired){doLogout();return;}
-      wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${escEm((d&&d.error)||'Erreur lecture dossier')}</p>`;
-      if(msg){msg.textContent=(d&&d.error)||'';msg.className='modal-msg error show';}
+      const errTxt=(d&&d.error)||'Erreur lecture dossier';
+      const deployHint=/Action inconnue:\s*gmail_/i.test(errTxt)
+        ? ' — Le backend en ligne n’a pas encore Gmail. Dans Apps Script : coller ERP TRANSFERS.gs.txt dans Transfer NL.gs, puis Déployer → Gérer les déploiements → Nouvelle version (pas seulement Enregistrer).'
+        : '';
+      wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${escEm(errTxt)}${escEm(deployHint)}</p>`;
+      if(msg){msg.textContent=errTxt;msg.className='modal-msg error show';}
       return;
     }
     const list=d.messages||[];
