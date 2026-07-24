@@ -2427,17 +2427,20 @@ function i18nPatchAgencySelects(){
 // ═══════════════════════════════════════════════════════════
 // API — OPTIMISÉE POUR PERFORMANCE
 // ═══════════════════════════════════════════════════════════
-async function api(payload){
+async function api(payload, opts){
   dbg('req','📤 '+payload.action);
   try{
-    // Usar Promise.race para timeout — AbortController não funciona no contexto Apps Script
+    const act=String(payload&&payload.action||'');
+    const isGmail=act.indexOf('gmail_')===0;
+    // Gmail peut dépasser 20s ; hors Gmail on garde 20s
+    const timeoutMs=(opts&&opts.timeoutMs)||(isGmail?55000:20000);
     const fetchPromise = fetch(API_URL,{
       method:'POST',
       headers:{'Content-Type':'text/plain'},
       body:JSON.stringify(payload)
     });
     const timeoutPromise = new Promise((_,reject)=>
-      setTimeout(()=>reject(new Error('Timeout: servidor demorou mais de 20 segundos.')),20000)
+      setTimeout(()=>reject(new Error('Timeout: servidor demorou mais de '+(timeoutMs/1000)+' segundos.')),timeoutMs)
     );
     const r = await Promise.race([fetchPromise, timeoutPromise]);
     
@@ -4963,21 +4966,23 @@ async function loadEmailMailbox(){
   const msg=document.getElementById('em-mbox-msg');
   if(msg){msg.className='modal-msg';msg.textContent='';}
   highlightEmailFolders(S.emailFolder||'inbox');
+  // Liste d’abord (priorité) — meta en parallèle sans bloquer
+  const listP=loadEmailMailboxList();
   try{
     const d=await api({action:'gmail_getMailboxMeta',adminToken:S.token});
     if(d&&d.sessionExpired){doLogout();return;}
     if(acc){
       if(d&&d.success){
         const draftN=d.folders&&d.folders.drafts&&d.folders.drafts.countApprox!=null?(' · Rascunhos: '+d.folders.drafts.countApprox):'';
-        acc.textContent=(d.account?('Boîte : '+d.account):'Boîte Gmail ERP')+draftN+(d.note?' — '+d.note:'');
+        acc.textContent=(d.account?('Boîte : '+d.account):'Boîte Gmail ERP')+draftN;
       }else{
-        acc.textContent=(d&&d.error)||'Meta boîte indisponible — déployez le backend mis à jour et ré-autorisez Gmail.';
+        acc.textContent=(d&&d.error)||'—';
       }
     }
   }catch(err){
     if(acc)acc.textContent=String(err.message||err);
   }
-  await loadEmailMailboxList();
+  await listP;
 }
 
 function escEm(s){
@@ -4993,6 +4998,34 @@ function fmtEmailDate(iso){
   }catch(e){ return String(iso).replace('T',' ').slice(0,16); }
 }
 
+function markEmailRowReadLocal(messageId){
+  const btn=document.querySelector('#em-mbox-list button[data-mid="'+String(messageId).replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"]');
+  if(!btn){
+    document.querySelectorAll('#em-mbox-list button[data-mid]').forEach(el=>{
+      if(el.getAttribute('data-mid')===messageId){
+        el.classList.remove('em-unread');
+        el.classList.add('em-read');
+        el.style.fontWeight='400';
+        el.style.borderLeft='3px solid transparent';
+        el.style.color='var(--tm)';
+        el.style.background=el.getAttribute('data-sel')==='1'?'var(--gold-s)':'transparent';
+        const badge=el.querySelector('.em-unread-badge');
+        if(badge)badge.remove();
+        const lab=el.querySelector('span span');
+      }
+    });
+    return;
+  }
+  btn.classList.remove('em-unread');
+  btn.classList.add('em-read');
+  btn.style.fontWeight='400';
+  btn.style.borderLeft='3px solid transparent';
+  btn.style.color='var(--tm)';
+  btn.style.background=btn.getAttribute('data-sel')==='1'?'var(--gold-s)':'transparent';
+  const badge=btn.querySelector('.em-unread-badge');
+  if(badge)badge.remove();
+}
+
 async function loadEmailMailboxList(){
   const wrap=document.getElementById('em-mbox-list');
   const msg=document.getElementById('em-mbox-msg');
@@ -5001,39 +5034,46 @@ async function loadEmailMailboxList(){
   const q=S.emailSearchQ||'';
   wrap.innerHTML='<div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div>';
   try{
-    const payload={action:'gmail_listFolder',adminToken:S.token,start:0,maxResults:40};
+    const payload={action:'gmail_listFolder',adminToken:S.token,start:0,maxResults:20};
     if(q)payload.q=q; else payload.folder=folder;
     const d=await api(payload);
     if(!d||!d.success){
       if(d&&d.sessionExpired){doLogout();return;}
       const errTxt=(d&&d.error)||'Erreur lecture dossier';
       const deployHint=/Action inconnue:\s*gmail_/i.test(errTxt)
-        ? ' — Le backend en ligne n’a pas encore Gmail. Dans Apps Script : coller ERP TRANSFERS.gs.txt dans Transfer NL.gs, puis Déployer → Gérer les déploiements → Nouvelle version (pas seulement Enregistrer).'
+        ? ' — Backend Gmail non déployé (Nouvelle version Apps Script).'
         : '';
       wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${escEm(errTxt)}${escEm(deployHint)}</p>`;
       if(msg){msg.textContent=errTxt;msg.className='modal-msg error show';}
       return;
     }
     const list=d.messages||[];
+    S.emailListCache=list;
     if(!list.length){
       wrap.innerHTML=`<p style="padding:16px;color:var(--ts)">${q?'Nenhum resultado.':'Aucun message dans ce dossier.'}</p>`;
       return;
     }
     let html='<div style="display:flex;flex-direction:column">';
     list.forEach(m=>{
-      const unread=m.unread?'font-weight:700;':'';
-      const bg=m.id===S.emailSelectedId?'background:var(--gold-s);':'';
+      const isUnread=!!m.unread;
+      const isSel=m.id===S.emailSelectedId;
       const who=folder==='sent'?(m.to||m.from||'—'):(m.from||m.to||'—');
       const star=m.starred?'⭐ ':'';
-      const att=m.hasAttachments?(' 📎'+(m.attachmentNames&&m.attachmentNames[0]?' '+escEm(m.attachmentNames[0]):'')):'';
       const draftMark=(m.folder==='drafts'||folder==='drafts')?'<span style="color:var(--danger)">Rascunho </span>':'';
-      html+=`<button type="button" data-mid="${escEm(m.id)}" onclick="openEmailMailboxMessage(this.getAttribute('data-mid'))" style="text-align:left;border:0;border-bottom:1px solid var(--border2);padding:10px 12px;cursor:pointer;background:transparent;color:var(--text);${unread}${bg}">
+      const unreadBadge=isUnread?'<span class="em-unread-badge" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#1a73e8;margin-right:6px;vertical-align:middle"></span>':'';
+      const rowStyle=[
+        'text-align:left','border:0','border-bottom:1px solid var(--border2)','padding:10px 12px','cursor:pointer',
+        'border-left:3px solid '+(isUnread?'#1a73e8':'transparent'),
+        'font-weight:'+(isUnread?'700':'400'),
+        'color:'+(isUnread?'var(--text)':'var(--tm)'),
+        'background:'+(isSel?'var(--gold-s)':(isUnread?'rgba(26,115,232,.06)':'transparent'))
+      ].join(';');
+      html+=`<button type="button" class="${isUnread?'em-unread':'em-read'}" data-mid="${escEm(m.id)}" data-sel="${isSel?'1':'0'}" onclick="openEmailMailboxMessage(this.getAttribute('data-mid'))" style="${rowStyle}">
         <div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:2px">
-          <span>${star}${escEm(who)}</span>
+          <span>${unreadBadge}${star}${escEm(who)}${isUnread?' <span style="font-size:10px;color:#1a73e8">Non lu</span>':' <span style="font-size:10px;color:var(--ts)">Lu</span>'}</span>
           <span style="color:var(--ts);white-space:nowrap">${escEm(fmtEmailDate(m.date))}</span>
         </div>
-        <div style="font-size:13px">${draftMark}${escEm(m.subject||'(sans objet)')}${att}</div>
-        <div style="font-size:11px;color:var(--ts);margin-top:2px">${escEm(m.snippet||'')}</div>
+        <div style="font-size:13px">${draftMark}${escEm(m.subject||'(sans objet)')}</div>
       </button>`;
     });
     html+='</div>';
@@ -5045,6 +5085,7 @@ async function loadEmailMailboxList(){
 
 async function openEmailMailboxMessage(messageId){
   S.emailSelectedId=messageId;
+  markEmailRowReadLocal(messageId);
   const empty=document.getElementById('em-mbox-detail-empty');
   const body=document.getElementById('em-mbox-detail-body');
   const msg=document.getElementById('em-mbox-msg');
@@ -5059,7 +5100,8 @@ async function openEmailMailboxMessage(messageId){
     if(th)th.innerHTML='';
   }
   try{
-    const d=await api({action:'gmail_getMessage',adminToken:S.token,messageId,includeThread:true});
+    // Pas de includeThread (trop lent / timeout)
+    const d=await api({action:'gmail_getMessage',adminToken:S.token,messageId,includeThread:false});
     if(!d||!d.success){
       if(d&&d.sessionExpired){doLogout();return;}
       if(msg){msg.textContent=(d&&d.error)||'Erreur';msg.className='modal-msg error show';}
@@ -5069,7 +5111,7 @@ async function openEmailMailboxMessage(messageId){
     }
     const m=d.message||{};
     S.emailCurrentMsg=m;
-    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'');
+    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'')+' · Lu';
     document.getElementById('em-mbox-subject').textContent=m.subject||'(sans objet)';
     document.getElementById('em-mbox-headers').innerHTML=
       `<div><strong>De :</strong> ${escEm(m.from)}</div>`+
@@ -5081,13 +5123,6 @@ async function openEmailMailboxMessage(messageId){
     document.getElementById('em-mbox-attachments').innerHTML=atts.length
       ? ('📎 '+atts.map(a=>escEm(a.name||'fichier')+' ('+Math.round((a.size||0)/1024)+' Ko)').join(' · '))
       : '';
-    const thEl=document.getElementById('em-mbox-thread');
-    if(thEl){
-      const thread=m.thread||[];
-      thEl.innerHTML=thread.length>1
-        ? ('Fil ('+thread.length+') : '+thread.map(t=>escEm((t.from||'').split('<')[0].trim())+' · '+escEm(fmtEmailDate(t.date))).join(' → '))
-        : '';
-    }
     const htmlBox=document.getElementById('em-mbox-html');
     if(m.bodyHtml){
       htmlBox.innerHTML='';
@@ -5099,7 +5134,6 @@ async function openEmailMailboxMessage(messageId){
     }else{
       htmlBox.innerHTML=`<pre style="white-space:pre-wrap;font-size:12px;margin:0">${escEm(m.bodyPlain||'')}</pre>`;
     }
-    loadEmailMailboxList();
   }catch(err){
     if(msg){msg.textContent=String(err.message||err);msg.className='modal-msg error show';}
   }
