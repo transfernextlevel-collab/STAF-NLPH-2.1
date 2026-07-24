@@ -1,7 +1,7 @@
 {
-  "name": "NLPH — Staff Reception 2.1 (bureau)",
-  "short_name": "NLPH Staff 2.1",
-  "description": "Staff Reception 2.1 — réception ERP (expérimental, onglet Email)",
+  "name": "NLPH — Staff réception (bureau)",
+  "short_name": "NLPH Staff",
+  "description": "Réception et réservations ERP — version bureau",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
