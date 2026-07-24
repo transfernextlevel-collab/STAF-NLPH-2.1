@@ -1102,84 +1102,82 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
     </div>
   </div>
 
-  <!-- TAB EMAIL (2.1) — boîte Gmail complète (dossiers + catégories + recherche + compose) -->
+  <!-- TAB EMAIL (2.1) — responsive PC + téléphone -->
   <div class="section" id="section-email">
-    <div class="card fadein">
+    <div class="card fadein em-card">
       <div class="card-hdr">
         <div class="card-ttl" id="lbl-email-ttl">✉️ Email</div>
-        <div class="hdr-acts">
+        <div class="hdr-acts em-hdr-acts">
           <button class="btn btn-navy btn-sm" type="button" onclick="switchEmailPanel('compose')" id="btn-email-compose">✏️ Compor</button>
-          <button class="btn btn-ghost btn-sm" type="button" onclick="loadEmailTab()" id="btn-email-refresh">↻ Atualizar</button>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="loadEmailTab()" id="btn-email-refresh">↻</button>
         </div>
       </div>
-      <div style="padding:12px 16px;font-size:12px;color:var(--ts);background:var(--surface);border-bottom:1px solid var(--border2)" id="lbl-email-hint">
-        Paramètres email complets (type Gmail) via la même API : reçus, envoyés, catégories, spam, brouillons, recherche, lecture et composition. Compte = Apps Script ERP.
-      </div>
-      <div style="padding:16px;display:grid;gap:14px;max-width:1280px">
-        <div class="email-tabs" id="email-main-tabs">
+      <div class="em-hint" id="lbl-email-hint">Boîte Gmail (reçus / envoyés / dossiers) — même API ERP.</div>
+      <div class="em-body">
+        <div class="email-tabs em-main-tabs" id="email-main-tabs">
           <div class="email-tab active" data-empanel="mailbox" onclick="switchEmailPanel('mailbox')" id="em-tab-mailbox">Boîte</div>
           <div class="email-tab" data-empanel="compose" onclick="switchEmailPanel('compose')" id="em-tab-compose">Compor</div>
-          <div class="email-tab" data-empanel="send" onclick="switchEmailPanel('send')" id="em-tab-send">Confirmação reserva</div>
+          <div class="email-tab" data-empanel="send" onclick="switchEmailPanel('send')" id="em-tab-send">Confirmação</div>
           <div class="email-tab" data-empanel="templates" onclick="switchEmailPanel('templates')" id="em-tab-tpl">Modelos</div>
         </div>
 
-        <div id="email-panel-mailbox">
-          <div id="em-mbox-account" style="font-size:12px;color:var(--tm);margin-bottom:10px">—</div>
-          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
-            <input type="search" id="em-mbox-search" placeholder="Pesquisar correio…" style="flex:1;min-width:200px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)" onkeydown="if(event.key==='Enter'){event.preventDefault();runEmailMailboxSearch();}">
-            <button type="button" class="btn btn-navy btn-sm" onclick="runEmailMailboxSearch()">🔍 Pesquisar</button>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="clearEmailMailboxSearch()">✕</button>
+        <div id="email-panel-mailbox" class="em-panel-mailbox">
+          <div id="em-mbox-account" class="em-account">—</div>
+          <div class="em-search-row">
+            <input type="search" id="em-mbox-search" class="em-search-input" placeholder="Pesquisar correio…" enterkeyhint="search" onkeydown="if(event.key==='Enter'){event.preventDefault();runEmailMailboxSearch();}">
+            <button type="button" class="btn btn-navy btn-sm em-search-btn" onclick="runEmailMailboxSearch()">🔍</button>
+            <button type="button" class="btn btn-ghost btn-sm em-search-btn" onclick="clearEmailMailboxSearch()">✕</button>
           </div>
-          <div style="display:grid;grid-template-columns:200px minmax(0,1fr) minmax(280px,1.2fr);gap:12px;align-items:start" id="em-mbox-grid" class="em-mbox-grid">
-            <nav id="email-folder-tabs" style="display:flex;flex-direction:column;gap:2px;border:1px solid var(--border2);border-radius:var(--r);padding:8px;background:var(--surface);max-height:560px;overflow:auto">
-              <button type="button" class="email-tab active" data-folder="inbox" onclick="switchEmailFolder('inbox')" style="text-align:left;width:100%">📥 Caixa de entrada</button>
-              <button type="button" class="email-tab" data-folder="starred" onclick="switchEmailFolder('starred')" style="text-align:left;width:100%">⭐ Com estrela</button>
-              <button type="button" class="email-tab" data-folder="snoozed" onclick="switchEmailFolder('snoozed')" style="text-align:left;width:100%">💤 Suspenso</button>
-              <button type="button" class="email-tab" data-folder="important" onclick="switchEmailFolder('important')" style="text-align:left;width:100%">❗ Importante</button>
-              <button type="button" class="email-tab" data-folder="sent" onclick="switchEmailFolder('sent')" style="text-align:left;width:100%">📤 Enviado</button>
-              <button type="button" class="email-tab" data-folder="scheduled" onclick="switchEmailFolder('scheduled')" style="text-align:left;width:100%">🗓️ Agendado</button>
-              <button type="button" class="email-tab" data-folder="drafts" onclick="switchEmailFolder('drafts')" style="text-align:left;width:100%">📝 Rascunhos</button>
-              <button type="button" class="email-tab" data-folder="spam" onclick="switchEmailFolder('spam')" style="text-align:left;width:100%">🚫 Spam</button>
-              <button type="button" class="email-tab" data-folder="trash" onclick="switchEmailFolder('trash')" style="text-align:left;width:100%">🗑️ Lixo</button>
-              <div style="height:1px;background:var(--border2);margin:8px 4px"></div>
-              <button type="button" class="email-tab" data-folder="updates" onclick="switchEmailFolder('updates')" style="text-align:left;width:100%">🔔 Atualizações</button>
-              <button type="button" class="email-tab" data-folder="all" onclick="switchEmailFolder('all')" style="text-align:left;width:100%">📚 Todos</button>
+          <div id="em-mbox-grid" class="em-mbox-grid" data-view="list">
+            <nav id="email-folder-tabs" class="em-folder-nav" aria-label="Dossiers email">
+              <button type="button" class="email-tab em-folder-btn active" data-folder="inbox" onclick="switchEmailFolder('inbox')">📥 Entrada</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="starred" onclick="switchEmailFolder('starred')">⭐ Estrela</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="snoozed" onclick="switchEmailFolder('snoozed')">💤 Suspenso</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="important" onclick="switchEmailFolder('important')">❗ Importante</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="sent" onclick="switchEmailFolder('sent')">📤 Enviado</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="scheduled" onclick="switchEmailFolder('scheduled')">🗓️ Agendado</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="drafts" onclick="switchEmailFolder('drafts')">📝 Rascunhos</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="spam" onclick="switchEmailFolder('spam')">🚫 Spam</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="trash" onclick="switchEmailFolder('trash')">🗑️ Lixo</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="updates" onclick="switchEmailFolder('updates')">🔔 Atualizações</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="all" onclick="switchEmailFolder('all')">📚 Todos</button>
             </nav>
-            <div>
-              <div class="email-tabs" id="email-cat-tabs" style="flex-wrap:wrap;margin-bottom:8px">
+            <div class="em-list-col">
+              <div class="email-tabs em-cat-tabs" id="email-cat-tabs">
                 <div class="email-tab" data-folder="primary" onclick="switchEmailFolder('primary')">Principal</div>
                 <div class="email-tab" data-folder="promotions" onclick="switchEmailFolder('promotions')">Promoções</div>
                 <div class="email-tab" data-folder="social" onclick="switchEmailFolder('social')">Social</div>
                 <div class="email-tab" data-folder="updates" onclick="switchEmailFolder('updates')">Atualizações</div>
                 <div class="email-tab" data-folder="forums" onclick="switchEmailFolder('forums')">Fóruns</div>
               </div>
-              <div class="tbl-wrap" id="em-mbox-list" style="max-height:520px;overflow:auto;border:1px solid var(--border2);border-radius:var(--r)"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
+              <div class="tbl-wrap em-list-wrap" id="em-mbox-list"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
             </div>
-            <div id="em-mbox-detail" style="min-height:240px;border:1px solid var(--border2);border-radius:var(--r);padding:14px;background:var(--surface)">
-              <p style="color:var(--ts);font-size:13px" id="em-mbox-detail-empty">Sélectionnez un message (reçus ou envoyés).</p>
-              <div id="em-mbox-detail-body" style="display:none">
-                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <div id="em-mbox-detail" class="em-detail">
+              <button type="button" class="btn btn-ghost btn-sm em-back-list" onclick="emailBackToList()">← Lista</button>
+              <p class="em-detail-empty" id="em-mbox-detail-empty">Sélectionnez un message.</p>
+              <div id="em-mbox-detail-body" class="em-detail-body" style="display:none">
+                <div class="em-detail-actions">
                   <button type="button" class="btn btn-ghost btn-sm" onclick="replyEmailMailboxMessage()">↩ Répondre</button>
                 </div>
-                <div style="font-size:11px;color:var(--ts);margin-bottom:6px" id="em-mbox-meta"></div>
-                <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text)" id="em-mbox-subject"></div>
-                <div style="font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5" id="em-mbox-headers"></div>
-                <div id="em-mbox-attachments" style="font-size:12px;margin-bottom:10px"></div>
-                <div id="em-mbox-thread" style="font-size:11px;color:var(--ts);margin-bottom:10px"></div>
-                <div class="email-preview-content" id="em-mbox-html" style="max-height:420px;overflow:auto;border:1px solid var(--border2);border-radius:var(--r);padding:12px;background:#fff"></div>
+                <div class="em-detail-meta" id="em-mbox-meta"></div>
+                <div class="em-detail-subject" id="em-mbox-subject"></div>
+                <div class="em-detail-headers" id="em-mbox-headers"></div>
+                <div id="em-mbox-attachments" class="em-detail-atts"></div>
+                <div id="em-mbox-thread" class="em-detail-thread"></div>
+                <div class="email-preview-content em-detail-html" id="em-mbox-html"></div>
               </div>
             </div>
           </div>
           <div class="modal-msg" id="em-mbox-msg"></div>
         </div>
 
-        <div id="email-panel-compose" style="display:none;max-width:720px">
-          <div class="f-group"><label>Para (to) *</label><input type="email" id="em-comp-to" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)" placeholder="destinatario@email.com"></div>
-          <div class="f-group"><label>Cc</label><input type="text" id="em-comp-cc" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)"></div>
-          <div class="f-group"><label>Assunto *</label><input type="text" id="em-comp-subject" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)"></div>
-          <div class="f-group"><label>Mensagem *</label><textarea id="em-comp-body" rows="10" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit"></textarea></div>
+        <div id="email-panel-compose" class="em-panel-compose" style="display:none">
+          <div class="f-group"><label>Para (to) *</label><input type="email" id="em-comp-to" class="em-field" placeholder="destinatario@email.com"></div>
+          <div class="f-group"><label>Cc</label><input type="text" id="em-comp-cc" class="em-field"></div>
+          <div class="f-group"><label>Assunto *</label><input type="text" id="em-comp-subject" class="em-field"></div>
+          <div class="f-group"><label>Mensagem *</label><textarea id="em-comp-body" rows="8" class="em-field em-textarea"></textarea></div>
           <input type="hidden" id="em-comp-reply-id" value="">
-          <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <div class="em-compose-acts">
             <button type="button" class="btn btn-navy" onclick="sendEmailCompose()">✉️ Enviar</button>
             <button type="button" class="btn btn-ghost" onclick="clearEmailCompose()">Limpar</button>
           </div>
@@ -1189,31 +1187,101 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
         <div id="email-panel-send" style="display:none">
           <div class="f-group">
             <label id="lbl-em-resa">Reserva (ID)</label>
-            <select id="em-tab-resa" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)"></select>
+            <select id="em-tab-resa" class="em-field"></select>
           </div>
           <div class="f-group">
             <label id="lbl-em-lang">Idioma do email</label>
-            <select id="em-tab-lang" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)"></select>
+            <select id="em-tab-lang" class="em-field"></select>
           </div>
-          <div id="em-tab-client-info" style="font-size:12px;color:var(--tm);padding:10px 12px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border2)">—</div>
-          <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px">
+          <div id="em-tab-client-info" class="em-client-info">—</div>
+          <div class="em-compose-acts">
             <button type="button" class="btn btn-navy" onclick="sendEmailTabConfirmacao()" id="btn-em-send">✉️ Enviar email (API)</button>
           </div>
           <div class="modal-msg" id="em-tab-msg"></div>
         </div>
         <div id="email-panel-templates" style="display:none">
-          <p style="font-size:12px;color:var(--ts);margin-bottom:10px" id="lbl-em-tpl-hint">Modelos carregados via <code>getEmailTemplates</code> (mesma API).</p>
+          <p class="em-tpl-hint" id="lbl-em-tpl-hint">Modelos via <code>getEmailTemplates</code>.</p>
           <div class="tbl-wrap" id="em-tpl-wrap"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
         </div>
       </div>
     </div>
   </div>
   <style>
-  @media (max-width:900px){
-    #em-mbox-grid.em-mbox-grid{grid-template-columns:1fr!important}
-    #email-folder-tabs{flex-direction:row!important;flex-wrap:wrap;max-height:none!important}
-    #email-folder-tabs .email-tab{width:auto!important}
+/* ══ Email 2.1 — PC + téléphone ══ */
+.em-hint{padding:10px 14px;font-size:12px;color:var(--ts);background:var(--surface);border-bottom:1px solid var(--border2);line-height:1.45}
+.em-body{padding:14px;display:grid;gap:12px;max-width:1280px;width:100%;box-sizing:border-box}
+.em-main-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;gap:6px;scrollbar-width:thin;margin-bottom:0;padding-bottom:10px}
+.em-main-tabs .email-tab{flex:0 0 auto;min-height:40px;display:inline-flex;align-items:center;padding:8px 14px;touch-action:manipulation}
+.em-account{font-size:12px;color:var(--tm);word-break:break-word;line-height:1.4}
+.em-search-row{display:flex;gap:8px;align-items:stretch;flex-wrap:nowrap}
+.em-search-input{flex:1;min-width:0;padding:12px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;box-sizing:border-box}
+.em-search-btn{min-width:44px;min-height:44px;touch-action:manipulation;justify-content:center}
+.em-mbox-grid{display:grid;grid-template-columns:190px minmax(0,1fr) minmax(260px,1.15fr);gap:12px;align-items:stretch;min-height:0}
+.em-folder-nav{display:flex;flex-direction:column;gap:3px;border:1px solid var(--border2);border-radius:var(--r);padding:8px;background:var(--surface);max-height:min(62vh,560px);overflow:auto;-webkit-overflow-scrolling:touch}
+.em-folder-btn{text-align:left!important;width:100%;min-height:40px;padding:8px 10px!important;font-size:12px!important;touch-action:manipulation;border:1px solid transparent;background:transparent;font-family:inherit}
+.em-folder-btn.active{background:var(--gold-s);border-color:var(--gold-b);color:var(--navy)}
+.em-list-col{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0}
+.em-cat-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:0;gap:4px;padding-bottom:6px;scrollbar-width:thin}
+.em-cat-tabs .email-tab{flex:0 0 auto;min-height:36px;padding:6px 12px;touch-action:manipulation}
+.em-list-wrap{max-height:min(58vh,520px);overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border2);border-radius:var(--r);background:var(--white);min-height:200px}
+.em-list-wrap button{width:100%;box-sizing:border-box;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.em-detail{min-height:240px;border:1px solid var(--border2);border-radius:var(--r);padding:12px;background:var(--surface);display:flex;flex-direction:column;min-width:0;max-height:min(70vh,640px);overflow:auto;-webkit-overflow-scrolling:touch}
+.em-back-list{display:none;align-self:flex-start;margin-bottom:10px;min-height:40px;touch-action:manipulation}
+.em-detail-empty{color:var(--ts);font-size:13px;margin:0}
+.em-detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.em-detail-meta{font-size:11px;color:var(--ts);margin-bottom:6px}
+.em-detail-subject{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text);word-break:break-word;line-height:1.35}
+.em-detail-headers{font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5;word-break:break-word}
+.em-detail-atts,.em-detail-thread{font-size:12px;margin-bottom:10px;word-break:break-word}
+.em-detail-html{flex:1;max-height:none;min-height:220px;overflow:auto;border:1px solid var(--border2);border-radius:var(--r);padding:8px;background:#fff}
+.em-detail-html iframe{width:100%;min-height:280px;border:0;background:#fff}
+.em-field{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;box-sizing:border-box;font-family:inherit}
+.em-textarea{min-height:160px;resize:vertical}
+.em-compose-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+.em-compose-acts .btn{min-height:44px;touch-action:manipulation}
+.em-client-info{font-size:12px;color:var(--tm);padding:10px 12px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border2);margin-bottom:8px;word-break:break-word}
+.em-tpl-hint{font-size:12px;color:var(--ts);margin-bottom:10px}
+.em-panel-compose{max-width:720px;width:100%}
+
+@media(max-width:1100px){
+  .em-mbox-grid{grid-template-columns:170px minmax(0,1fr);grid-template-rows:auto auto}
+  .em-detail{grid-column:1 / -1;max-height:min(50vh,420px)}
+}
+@media(max-width:768px){
+  #section-email{padding-left:10px;padding-right:10px}
+  #section-email .em-card{border-radius:var(--r-lg);overflow:hidden}
+  .em-body{padding:10px;gap:10px}
+  .em-hint{font-size:11px;padding:8px 12px}
+  .em-mbox-grid{display:flex;flex-direction:column;gap:10px}
+  .em-folder-nav{
+    flex-direction:row;flex-wrap:nowrap;max-height:none;overflow-x:auto;overflow-y:hidden;
+    gap:6px;padding:8px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;
   }
+  .em-folder-btn{width:auto!important;flex:0 0 auto;white-space:nowrap;min-height:42px;padding:8px 12px!important}
+  .em-list-wrap{max-height:none;min-height:48vh;flex:1}
+  .em-cat-tabs{padding-bottom:4px}
+  .em-detail{max-height:none;min-height:50vh;padding:12px}
+  .em-back-list{display:inline-flex!important;align-items:center}
+  /* Mobile: liste OU détail */
+  .em-mbox-grid[data-view="list"] .em-detail{display:none}
+  .em-mbox-grid[data-view="detail"] .em-list-col,
+  .em-mbox-grid[data-view="detail"] .em-folder-nav,
+  .em-mbox-grid[data-view="detail"] .em-search-row,
+  .em-mbox-grid[data-view="detail"] ~ .em-account{ }
+  .em-mbox-grid[data-view="detail"] .em-list-col{display:none}
+  .em-mbox-grid[data-view="detail"] .em-folder-nav{display:none}
+  #email-panel-mailbox.em-view-detail .em-search-row{display:none}
+  #email-panel-mailbox.em-view-detail .em-account{display:none}
+  .em-detail-html{min-height:40vh}
+  .em-detail-html iframe{min-height:40vh}
+  .em-main-tabs{margin:0 -4px;padding-left:4px;padding-right:4px}
+}
+@media(min-width:769px){
+  .em-back-list{display:none!important}
+  .em-mbox-grid[data-view="detail"] .em-list-col,
+  .em-mbox-grid[data-view="list"] .em-detail{display:flex}
+  .em-mbox-grid .em-detail{display:flex}
+}
   </style>
 
   </div><!-- /main -->
@@ -4843,6 +4911,15 @@ function showTab(name){
   else if(name==='email')loadEmailTab();
 }
 
+function clearEmailMailboxDetail(){
+  const empty=document.getElementById('em-mbox-detail-empty');
+  const body=document.getElementById('em-mbox-detail-body');
+  if(empty)empty.style.display='';
+  if(body)body.style.display='none';
+  S.emailSelectedId='';
+  S.emailCurrentMsg=null;
+}
+
 function switchEmailPanel(which){
   document.querySelectorAll('#email-main-tabs .email-tab').forEach(el=>{
     el.classList.toggle('active', el.getAttribute('data-empanel')===which);
@@ -4855,8 +4932,8 @@ function switchEmailPanel(which){
   if(comp)comp.style.display=which==='compose'?'':'none';
   if(send)send.style.display=which==='send'?'':'none';
   if(tpl)tpl.style.display=which==='templates'?'':'none';
+  if(which==='mailbox'){ emailBackToList(); loadEmailMailbox(); }
   if(which==='templates')loadEmailTemplatesTab();
-  if(which==='mailbox')loadEmailMailbox();
   if(which==='send'){ fillEmailTabLangSelect(); fillEmailTabResaSelect(); }
 }
 
@@ -4873,7 +4950,27 @@ function switchEmailFolder(folder){
   if(search)search.value='';
   highlightEmailFolders(S.emailFolder);
   clearEmailMailboxDetail();
+  emailBackToList();
   loadEmailMailboxList();
+}
+
+function emailBackToList(){
+  const grid=document.getElementById('em-mbox-grid');
+  const panel=document.getElementById('email-panel-mailbox');
+  if(grid)grid.setAttribute('data-view','list');
+  if(panel)panel.classList.remove('em-view-detail');
+  try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
+}
+
+function emailShowDetailMobile(){
+  const grid=document.getElementById('em-mbox-grid');
+  const panel=document.getElementById('email-panel-mailbox');
+  if(grid)grid.setAttribute('data-view','detail');
+  if(panel)panel.classList.add('em-view-detail');
+  try{
+    const d=document.getElementById('em-mbox-detail');
+    if(d)d.scrollIntoView({behavior:'smooth',block:'start'});
+  }catch(e){}
 }
 
 function runEmailMailboxSearch(){
@@ -4890,15 +4987,6 @@ function clearEmailMailboxSearch(){
   const search=document.getElementById('em-mbox-search');
   if(search)search.value='';
   switchEmailFolder(S.emailFolder||'inbox');
-}
-
-function clearEmailMailboxDetail(){
-  const empty=document.getElementById('em-mbox-detail-empty');
-  const body=document.getElementById('em-mbox-detail-body');
-  if(empty)empty.style.display='';
-  if(body)body.style.display='none';
-  S.emailSelectedId='';
-  S.emailCurrentMsg=null;
 }
 
 function fillEmailTabLangSelect(){
@@ -5086,6 +5174,7 @@ async function loadEmailMailboxList(){
 async function openEmailMailboxMessage(messageId){
   S.emailSelectedId=messageId;
   markEmailRowReadLocal(messageId);
+  emailShowDetailMobile();
   const empty=document.getElementById('em-mbox-detail-empty');
   const body=document.getElementById('em-mbox-detail-body');
   const msg=document.getElementById('em-mbox-msg');
