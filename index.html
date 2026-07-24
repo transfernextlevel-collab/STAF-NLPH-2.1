@@ -1102,7 +1102,7 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
     </div>
   </div>
 
-  <!-- TAB EMAIL (2.1) — même API_URL / boîte d'envoi backend -->
+  <!-- TAB EMAIL (2.1) — même API_URL + boîte Gmail (lecture dossiers) -->
   <div class="section" id="section-email">
     <div class="card fadein">
       <div class="card-hdr">
@@ -1112,14 +1112,41 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
         </div>
       </div>
       <div style="padding:12px 16px;font-size:12px;color:var(--ts);background:var(--surface);border-bottom:1px solid var(--border2)" id="lbl-email-hint">
-        Envio via a mesma API (Apps Script) e a caixa de email configurada no backend (GmailApp ou relais). Staff Reception 2.1 — experimental.
+        Même API Apps Script. Envoi confirmations + lecture de la boîte Gmail du compte ERP (reçus, envoyés, notifications, spam, brouillons). Après mise à jour backend : redéployer + ré-autoriser Gmail.
       </div>
-      <div style="padding:16px;display:grid;gap:14px;max-width:920px">
+      <div style="padding:16px;display:grid;gap:14px;max-width:1100px">
         <div class="email-tabs" id="email-main-tabs">
-          <div class="email-tab active" data-empanel="send" onclick="switchEmailPanel('send')" id="em-tab-send">Enviar confirmação</div>
+          <div class="email-tab active" data-empanel="mailbox" onclick="switchEmailPanel('mailbox')" id="em-tab-mailbox">Boîte</div>
+          <div class="email-tab" data-empanel="send" onclick="switchEmailPanel('send')" id="em-tab-send">Enviar confirmação</div>
           <div class="email-tab" data-empanel="templates" onclick="switchEmailPanel('templates')" id="em-tab-tpl">Modelos (API)</div>
         </div>
-        <div id="email-panel-send">
+
+        <div id="email-panel-mailbox">
+          <div id="em-mbox-account" style="font-size:12px;color:var(--tm);margin-bottom:10px">—</div>
+          <div class="email-tabs" id="email-folder-tabs" style="flex-wrap:wrap">
+            <div class="email-tab active" data-folder="inbox" onclick="switchEmailFolder('inbox')">Reçus</div>
+            <div class="email-tab" data-folder="sent" onclick="switchEmailFolder('sent')">Envoyés</div>
+            <div class="email-tab" data-folder="notifications" onclick="switchEmailFolder('notifications')">Notifications</div>
+            <div class="email-tab" data-folder="spam" onclick="switchEmailFolder('spam')">Spam</div>
+            <div class="email-tab" data-folder="drafts" onclick="switchEmailFolder('drafts')">Brouillons</div>
+          </div>
+          <div style="display:grid;grid-template-columns:minmax(260px,1fr) minmax(280px,1.4fr);gap:12px;align-items:start" id="em-mbox-grid">
+            <div class="tbl-wrap" id="em-mbox-list" style="max-height:520px;overflow:auto;border:1px solid var(--border2);border-radius:var(--r)"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
+            <div id="em-mbox-detail" style="min-height:240px;border:1px solid var(--border2);border-radius:var(--r);padding:14px;background:var(--surface)">
+              <p style="color:var(--ts);font-size:13px" id="em-mbox-detail-empty">Sélectionnez un message.</p>
+              <div id="em-mbox-detail-body" style="display:none">
+                <div style="font-size:11px;color:var(--ts);margin-bottom:6px" id="em-mbox-meta"></div>
+                <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text)" id="em-mbox-subject"></div>
+                <div style="font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5" id="em-mbox-headers"></div>
+                <div id="em-mbox-attachments" style="font-size:12px;margin-bottom:10px"></div>
+                <div class="email-preview-content" id="em-mbox-html" style="max-height:420px;overflow:auto;border:1px solid var(--border2);border-radius:var(--r);padding:12px;background:#fff"></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-msg" id="em-mbox-msg"></div>
+        </div>
+
+        <div id="email-panel-send" style="display:none">
           <div class="f-group">
             <label id="lbl-em-resa">Reserva (ID)</label>
             <select id="em-tab-resa" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)"></select>
@@ -4770,11 +4797,32 @@ function switchEmailPanel(which){
   document.querySelectorAll('#email-main-tabs .email-tab').forEach(el=>{
     el.classList.toggle('active', el.getAttribute('data-empanel')===which);
   });
+  const mbox=document.getElementById('email-panel-mailbox');
   const send=document.getElementById('email-panel-send');
   const tpl=document.getElementById('email-panel-templates');
+  if(mbox)mbox.style.display=which==='mailbox'?'':'none';
   if(send)send.style.display=which==='send'?'':'none';
   if(tpl)tpl.style.display=which==='templates'?'':'none';
   if(which==='templates')loadEmailTemplatesTab();
+  if(which==='mailbox')loadEmailMailbox();
+  if(which==='send'){ fillEmailTabLangSelect(); fillEmailTabResaSelect(); }
+}
+
+function switchEmailFolder(folder){
+  S.emailFolder=folder||'inbox';
+  document.querySelectorAll('#email-folder-tabs .email-tab').forEach(el=>{
+    el.classList.toggle('active', el.getAttribute('data-folder')===S.emailFolder);
+  });
+  clearEmailMailboxDetail();
+  loadEmailMailboxList();
+}
+
+function clearEmailMailboxDetail(){
+  const empty=document.getElementById('em-mbox-detail-empty');
+  const body=document.getElementById('em-mbox-detail-body');
+  if(empty)empty.style.display='';
+  if(body)body.style.display='none';
+  S.emailSelectedId='';
 }
 
 function fillEmailTabLangSelect(){
@@ -4823,6 +4871,7 @@ function updateEmailTabClientInfo(){
 }
 
 async function loadEmailTab(){
+  if(!S.emailFolder)S.emailFolder='inbox';
   fillEmailTabLangSelect();
   const msg=document.getElementById('em-tab-msg');
   if(msg){msg.className='modal-msg';msg.textContent='';}
@@ -4830,6 +4879,123 @@ async function loadEmailTab(){
     try{ await loadReservas(); }catch(e){}
   }
   fillEmailTabResaSelect();
+  const active=document.querySelector('#email-main-tabs .email-tab.active');
+  const panel=active?active.getAttribute('data-empanel'):'mailbox';
+  if(panel==='mailbox'||!panel)await loadEmailMailbox();
+  else if(panel==='templates')await loadEmailTemplatesTab();
+}
+
+async function loadEmailMailbox(){
+  const acc=document.getElementById('em-mbox-account');
+  const msg=document.getElementById('em-mbox-msg');
+  if(msg){msg.className='modal-msg';msg.textContent='';}
+  try{
+    const d=await api({action:'gmail_getMailboxMeta',adminToken:S.token});
+    if(d&&d.sessionExpired){doLogout();return;}
+    if(acc){
+      if(d&&d.success){
+        acc.textContent=d.account
+          ? ('Boîte : '+d.account+(d.note?' — '+d.note:''))
+          : (d.note||'Boîte Gmail du compte Apps Script');
+      }else{
+        acc.textContent=(d&&d.error)||'Meta boîte indisponible — déployez le backend mis à jour et ré-autorisez Gmail.';
+      }
+    }
+  }catch(err){
+    if(acc)acc.textContent=String(err.message||err);
+  }
+  await loadEmailMailboxList();
+}
+
+function escEm(s){
+  return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function loadEmailMailboxList(){
+  const wrap=document.getElementById('em-mbox-list');
+  const msg=document.getElementById('em-mbox-msg');
+  if(!wrap)return;
+  const folder=S.emailFolder||'inbox';
+  wrap.innerHTML='<div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div>';
+  try{
+    const d=await api({action:'gmail_listFolder',adminToken:S.token,folder,start:0,maxResults:40});
+    if(!d||!d.success){
+      if(d&&d.sessionExpired){doLogout();return;}
+      wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${escEm((d&&d.error)||'Erreur lecture dossier')}</p>`;
+      if(msg){msg.textContent=(d&&d.error)||'';msg.className='modal-msg error show';}
+      return;
+    }
+    const list=d.messages||[];
+    if(!list.length){
+      wrap.innerHTML='<p style="padding:16px;color:var(--ts)">Aucun message dans ce dossier.</p>';
+      return;
+    }
+    let html='<div style="display:flex;flex-direction:column">';
+    list.forEach(m=>{
+      const unread=m.unread?'font-weight:700;':'';
+      const bg=m.id===S.emailSelectedId?'background:var(--gold-s);':'';
+      html+=`<button type="button" data-mid="${escEm(m.id)}" onclick="openEmailMailboxMessage(this.getAttribute('data-mid'))" style="text-align:left;border:0;border-bottom:1px solid var(--border2);padding:10px 12px;cursor:pointer;background:transparent;color:var(--text);${unread}${bg}">
+        <div style="font-size:12px;margin-bottom:2px">${escEm(m.from||m.to||'—')}</div>
+        <div style="font-size:13px">${escEm(m.subject||'(sans objet)')}</div>
+        <div style="font-size:11px;color:var(--ts);margin-top:2px">${escEm(m.snippet||'')}</div>
+        <div style="font-size:10px;color:var(--ts);margin-top:4px">${escEm((m.date||'').replace('T',' ').slice(0,16))}</div>
+      </button>`;
+    });
+    html+='</div>';
+    wrap.innerHTML=html;
+  }catch(err){
+    wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${escEm(err.message||err)}</p>`;
+  }
+}
+
+async function openEmailMailboxMessage(messageId){
+  S.emailSelectedId=messageId;
+  const empty=document.getElementById('em-mbox-detail-empty');
+  const body=document.getElementById('em-mbox-detail-body');
+  const msg=document.getElementById('em-mbox-msg');
+  if(empty)empty.style.display='none';
+  if(body){
+    body.style.display='';
+    document.getElementById('em-mbox-subject').textContent='Chargement…';
+    document.getElementById('em-mbox-headers').textContent='';
+    document.getElementById('em-mbox-html').innerHTML='';
+    document.getElementById('em-mbox-attachments').innerHTML='';
+  }
+  try{
+    const d=await api({action:'gmail_getMessage',adminToken:S.token,messageId});
+    if(!d||!d.success){
+      if(d&&d.sessionExpired){doLogout();return;}
+      if(msg){msg.textContent=(d&&d.error)||'Erreur';msg.className='modal-msg error show';}
+      if(empty){empty.style.display='';empty.textContent=(d&&d.error)||'Erreur';}
+      if(body)body.style.display='none';
+      return;
+    }
+    const m=d.message||{};
+    document.getElementById('em-mbox-meta').textContent=(m.date||'').replace('T',' ').slice(0,19);
+    document.getElementById('em-mbox-subject').textContent=m.subject||'(sans objet)';
+    document.getElementById('em-mbox-headers').innerHTML=
+      `<div><strong>De :</strong> ${escEm(m.from)}</div>`+
+      `<div><strong>À :</strong> ${escEm(m.to)}</div>`+
+      (m.cc?`<div><strong>Cc :</strong> ${escEm(m.cc)}</div>`:'');
+    const atts=m.attachments||[];
+    document.getElementById('em-mbox-attachments').innerHTML=atts.length
+      ? ('📎 '+atts.map(a=>escEm(a.name||'fichier')+' ('+Math.round((a.size||0)/1024)+' Ko)').join(' · '))
+      : '';
+    const htmlBox=document.getElementById('em-mbox-html');
+    if(m.bodyHtml){
+      htmlBox.innerHTML='';
+      const ifr=document.createElement('iframe');
+      ifr.setAttribute('sandbox','');
+      ifr.style.cssText='width:100%;min-height:360px;border:0;background:#fff';
+      htmlBox.appendChild(ifr);
+      ifr.srcdoc=String(m.bodyHtml);
+    }else{
+      htmlBox.innerHTML=`<pre style="white-space:pre-wrap;font-size:12px;margin:0">${escEm(m.bodyPlain||'')}</pre>`;
+    }
+    loadEmailMailboxList();
+  }catch(err){
+    if(msg){msg.textContent=String(err.message||err);msg.className='modal-msg error show';}
+  }
 }
 
 async function sendEmailTabConfirmacao(){
