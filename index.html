@@ -1207,52 +1207,97 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
     </div>
   </div>
   <style>
-/* ══ Email 2.1 — PC + téléphone ══ */
-.em-hint{padding:10px 14px;font-size:12px;color:var(--ts);background:var(--surface);border-bottom:1px solid var(--border2);line-height:1.45}
-.em-body{padding:14px;display:grid;gap:12px;max-width:1280px;width:100%;box-sizing:border-box}
+/* ══ Email 2.1 — PC plein largeur + téléphone ══ */
+#section-email.section{max-width:none;width:100%;padding:16px 18px 28px;box-sizing:border-box}
+#section-email .em-card{width:100%;max-width:none}
+.em-hint{padding:10px 16px;font-size:12px;color:var(--ts);background:var(--surface);border-bottom:1px solid var(--border2);line-height:1.45}
+.em-body{padding:14px 16px;display:grid;gap:12px;max-width:none;width:100%;box-sizing:border-box}
 .em-main-tabs{overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;gap:6px;scrollbar-width:thin;margin-bottom:0;padding-bottom:10px}
 .em-main-tabs .email-tab{flex:0 0 auto;min-height:40px;display:inline-flex;align-items:center;padding:8px 14px;touch-action:manipulation}
-.em-account{font-size:12px;color:var(--tm);word-break:break-word;line-height:1.4}
+.em-account{font-size:12px;color:var(--tm);word-break:break-word;line-height:1.4;max-width:100%}
 .em-search-row{display:flex;gap:8px;align-items:stretch;flex-wrap:nowrap}
-.em-search-input{flex:1;min-width:0;padding:12px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;box-sizing:border-box}
+.em-search-input{flex:1;min-width:0;padding:12px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:15px;box-sizing:border-box}
 .em-search-btn{min-width:44px;min-height:44px;touch-action:manipulation;justify-content:center}
-.em-mbox-grid{display:grid;grid-template-columns:190px minmax(0,1fr) minmax(260px,1.15fr);gap:12px;align-items:stretch;min-height:0}
-.em-folder-nav{display:flex;flex-direction:column;gap:3px;border:1px solid var(--border2);border-radius:var(--r);padding:8px;background:var(--surface);max-height:min(62vh,560px);overflow:auto;-webkit-overflow-scrolling:touch}
+/* PC: 3 colonnes larges — dossiers | liste | lecture */
+.em-mbox-grid{
+  display:grid;
+  grid-template-columns:minmax(180px,220px) minmax(280px,1fr) minmax(380px,1.45fr);
+  gap:14px;
+  align-items:stretch;
+  min-height:calc(100vh - 220px);
+  width:100%;
+}
+.em-folder-nav{display:flex;flex-direction:column;gap:3px;border:1px solid var(--border2);border-radius:var(--r);padding:8px;background:var(--surface);max-height:calc(100vh - 240px);overflow:auto;-webkit-overflow-scrolling:touch}
 .em-folder-btn{text-align:left!important;width:100%;min-height:40px;padding:8px 10px!important;font-size:12px!important;touch-action:manipulation;border:1px solid transparent;background:transparent;font-family:inherit}
 .em-folder-btn.active{background:var(--gold-s);border-color:var(--gold-b);color:var(--navy)}
 .em-list-col{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0}
 .em-cat-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:0;gap:4px;padding-bottom:6px;scrollbar-width:thin}
 .em-cat-tabs .email-tab{flex:0 0 auto;min-height:36px;padding:6px 12px;touch-action:manipulation}
-.em-list-wrap{max-height:min(58vh,520px);overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border2);border-radius:var(--r);background:var(--white);min-height:200px}
+.em-list-wrap{flex:1;max-height:calc(100vh - 280px);min-height:360px;overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border2);border-radius:var(--r);background:var(--white)}
 .em-list-wrap button{width:100%;box-sizing:border-box;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.em-detail{min-height:240px;border:1px solid var(--border2);border-radius:var(--r);padding:12px;background:var(--surface);display:flex;flex-direction:column;min-width:0;max-height:min(70vh,640px);overflow:auto;-webkit-overflow-scrolling:touch}
+.em-detail{
+  min-height:360px;
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:14px 16px;
+  background:var(--surface);
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  max-height:calc(100vh - 240px);
+  overflow:hidden;
+}
 .em-back-list{display:none;align-self:flex-start;margin-bottom:10px;min-height:40px;touch-action:manipulation}
 .em-detail-empty{color:var(--ts);font-size:13px;margin:0}
-.em-detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-.em-detail-meta{font-size:11px;color:var(--ts);margin-bottom:6px}
-.em-detail-subject{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text);word-break:break-word;line-height:1.35}
-.em-detail-headers{font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5;word-break:break-word}
-.em-detail-atts,.em-detail-thread{font-size:12px;margin-bottom:10px;word-break:break-word}
-.em-detail-html{flex:1;max-height:none;min-height:220px;overflow:auto;border:1px solid var(--border2);border-radius:var(--r);padding:8px;background:#fff}
-.em-detail-html iframe{width:100%;min-height:280px;border:0;background:#fff}
-.em-field{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:16px;box-sizing:border-box;font-family:inherit}
+.em-detail-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;flex-shrink:0}
+.em-detail-meta{font-size:11px;color:var(--ts);margin-bottom:6px;flex-shrink:0}
+.em-detail-subject{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--text);word-break:break-word;line-height:1.35;flex-shrink:0}
+.em-detail-headers{font-size:12px;color:var(--tm);margin-bottom:10px;line-height:1.5;word-break:break-word;flex-shrink:0}
+.em-detail-atts,.em-detail-thread{font-size:12px;margin-bottom:8px;word-break:break-word;flex-shrink:0}
+.em-detail-html{
+  flex:1 1 auto;
+  min-height:280px;
+  overflow:auto;
+  overflow-x:hidden;
+  border:1px solid var(--border2);
+  border-radius:var(--r);
+  padding:0;
+  background:#fff;
+  -webkit-overflow-scrolling:touch;
+}
+.em-detail-html iframe{
+  display:block;
+  width:100%!important;
+  max-width:100%!important;
+  min-height:420px;
+  height:100%;
+  border:0;
+  background:#fff;
+}
+.em-field{width:100%;padding:12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:15px;box-sizing:border-box;font-family:inherit}
 .em-textarea{min-height:160px;resize:vertical}
 .em-compose-acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
 .em-compose-acts .btn{min-height:44px;touch-action:manipulation}
 .em-client-info{font-size:12px;color:var(--tm);padding:10px 12px;background:var(--surface);border-radius:var(--r);border:1px solid var(--border2);margin-bottom:8px;word-break:break-word}
 .em-tpl-hint{font-size:12px;color:var(--ts);margin-bottom:10px}
-.em-panel-compose{max-width:720px;width:100%}
+.em-panel-compose{max-width:900px;width:100%}
+
+@media(min-width:1400px){
+  .em-mbox-grid{grid-template-columns:220px minmax(340px,1fr) minmax(480px,1.55fr);gap:16px}
+  .em-detail-subject{font-size:18px}
+}
 
 @media(max-width:1100px){
-  .em-mbox-grid{grid-template-columns:170px minmax(0,1fr);grid-template-rows:auto auto}
-  .em-detail{grid-column:1 / -1;max-height:min(50vh,420px)}
+  .em-mbox-grid{grid-template-columns:160px minmax(0,1fr);grid-template-rows:auto auto;min-height:0}
+  .em-detail{grid-column:1 / -1;max-height:min(48vh,460px)}
+  .em-list-wrap{max-height:min(42vh,420px);min-height:240px}
 }
 @media(max-width:768px){
-  #section-email{padding-left:10px;padding-right:10px}
+  #section-email.section{padding:10px;padding-bottom:max(20px,env(safe-area-inset-bottom))}
   #section-email .em-card{border-radius:var(--r-lg);overflow:hidden}
   .em-body{padding:10px;gap:10px}
   .em-hint{font-size:11px;padding:8px 12px}
-  .em-mbox-grid{display:flex;flex-direction:column;gap:10px}
+  .em-mbox-grid{display:flex;flex-direction:column;gap:10px;min-height:0}
   .em-folder-nav{
     flex-direction:row;flex-wrap:nowrap;max-height:none;overflow-x:auto;overflow-y:hidden;
     gap:6px;padding:8px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;
@@ -1260,14 +1305,9 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
   .em-folder-btn{width:auto!important;flex:0 0 auto;white-space:nowrap;min-height:42px;padding:8px 12px!important}
   .em-list-wrap{max-height:none;min-height:48vh;flex:1}
   .em-cat-tabs{padding-bottom:4px}
-  .em-detail{max-height:none;min-height:50vh;padding:12px}
+  .em-detail{max-height:none;min-height:50vh;padding:12px;overflow:auto}
   .em-back-list{display:inline-flex!important;align-items:center}
-  /* Mobile: liste OU détail */
   .em-mbox-grid[data-view="list"] .em-detail{display:none}
-  .em-mbox-grid[data-view="detail"] .em-list-col,
-  .em-mbox-grid[data-view="detail"] .em-folder-nav,
-  .em-mbox-grid[data-view="detail"] .em-search-row,
-  .em-mbox-grid[data-view="detail"] ~ .em-account{ }
   .em-mbox-grid[data-view="detail"] .em-list-col{display:none}
   .em-mbox-grid[data-view="detail"] .em-folder-nav{display:none}
   #email-panel-mailbox.em-view-detail .em-search-row{display:none}
@@ -1275,6 +1315,7 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
   .em-detail-html{min-height:40vh}
   .em-detail-html iframe{min-height:40vh}
   .em-main-tabs{margin:0 -4px;padding-left:4px;padding-right:4px}
+  .em-search-input{font-size:16px}
 }
 @media(min-width:769px){
   .em-back-list{display:none!important}
@@ -3417,10 +3458,10 @@ async function openDetail(id){
 // ── Templates WA Staff → Agência ──
 /* Modèles WA sans emojis (évite les caractères � sur certains clients WhatsApp) */
 const WA_AGENCE={
-  pt:(r,hotelNom)=>`*PEDIDO DE CONFIRMAÇÃO — ${hotelNom||'Next Level Premium Hotels'}*\n\nA nossa equipa solicita a confirmação da vossa disponibilidade para o seguinte transfer:\n\n- Ref.: *${r.id}*\n- Cliente: ${r.clientNom||'—'}\n- Telemóvel: ${formaterTelephonePourMessageWa(r.telephone||r.clientTel)}\n- Email: ${r.clientEmail||'—'}\n- Data: *${fmtD(r.dateTransfer)} às ${fmtH(r.heureTransfer)}*\n- Partida: ${r.pointDepart||'—'}${r.adresseDepart?' ('+r.adresseDepart+')':''}\n- Destino: ${r.destination||'—'}${r.adresseDestination?' ('+r.adresseDestination+')':''}\n- ${r.personnes||'—'} pax · ${r.malas||'0'} malas${r.numVol?'\n- Voo: '+r.numVol:''}${r.numTransport?'\n- Transporte: '+r.numTransport:''}\n- Preço: *${r.prixFinal?r.prixFinal+' €':'A confirmar'}*\n\nPor favor confirme respondendo:\n- *confirmado*\n- ou indique qualquer impedimento`,
-  fr:(r,hotelNom)=>`*DEMANDE DE CONFIRMATION — ${hotelNom||'Next Level Premium Hotels'}*\n\nNotre équipe vous demande de confirmer votre disponibilité pour le transfert suivant :\n\n- Réf. : *${r.id}*\n- Client : ${r.clientNom||'—'}\n- Téléphone : ${formaterTelephonePourMessageWa(r.telephone||r.clientTel)}\n- Email : ${r.clientEmail||'—'}\n- Date : *${fmtD(r.dateTransfer)} à ${fmtH(r.heureTransfer)}*\n- Départ : ${r.pointDepart||'—'}${r.adresseDepart?' ('+r.adresseDepart+')':''}\n- Destination : ${r.destination||'—'}${r.adresseDestination?' ('+r.adresseDestination+')':''}\n- ${r.personnes||'—'} pax · ${r.malas||'0'} bagages${r.numVol?'\n- Vol : '+r.numVol:''}${r.numTransport?'\n- Transport : '+r.numTransport:''}\n- Prix : *${r.prixFinal?r.prixFinal+' €':'À confirmer'}*\n\nMerci de confirmer en répondant :\n- *confirmé*\n- ou indiquer tout empêchement`,
-  en:(r,hotelNom)=>`*CONFIRMATION REQUEST — ${hotelNom||'Next Level Premium Hotels'}*\n\nOur team requests your confirmation of availability for the following transfer:\n\n- Ref.: *${r.id}*\n- Client: ${r.clientNom||'—'}\n- Phone: ${formaterTelephonePourMessageWa(r.telephone||r.clientTel)}\n- Email: ${r.clientEmail||'—'}\n- Date: *${fmtD(r.dateTransfer)} at ${fmtH(r.heureTransfer)}*\n- From: ${r.pointDepart||'—'}${r.adresseDepart?' ('+r.adresseDepart+')':''}\n- To: ${r.destination||'—'}${r.adresseDestination?' ('+r.adresseDestination+')':''}\n- ${r.personnes||'—'} pax · ${r.malas||'0'} bags${r.numVol?'\n- Flight: '+r.numVol:''}${r.numTransport?'\n- Transport: '+r.numTransport:''}\n- Price: *${r.prixFinal?r.prixFinal+' €':'To confirm'}*\n\nPlease confirm by replying:\n- *confirmed*\n- or indicate any issue`,
-  es:(r,hotelNom)=>`*SOLICITUD DE CONFIRMACIÓN — ${hotelNom||'Next Level Premium Hotels'}*\n\nNuestro equipo solicita que confirme su disponibilidad para el siguiente traslado:\n\n- Ref.: *${r.id}*\n- Cliente: ${r.clientNom||'—'}\n- Teléfono: ${formaterTelephonePourMessageWa(r.telephone||r.clientTel)}\n- Email: ${r.clientEmail||'—'}\n- Fecha: *${fmtD(r.dateTransfer)} a las ${fmtH(r.heureTransfer)}*\n- Salida: ${r.pointDepart||'—'}${r.adresseDepart?' ('+r.adresseDepart+')':''}\n- Destino: ${r.destination||'—'}${r.adresseDestination?' ('+r.adresseDestination+')':''}\n- ${r.personnes||'—'} pax · ${r.malas||'0'} maletas${r.numVol?'\n- Vuelo: '+r.numVol:''}${r.numTransport?'\n- Transporte: '+r.numTransport:''}\n- Precio: *${r.prixFinal?r.prixFinal+' €':'A confirmar'}*\n\nPor favor confirme respondiendo:\n- *confirmado*\n- o indique cualquier impedimento`
+  pt:(r,hotelNom)=>`*PEDIDO DE CONFIRMAÇÃO — ${hotelNom||'Next Level Premium Hotels'}*\n\nA nossa equipa solicita a confirmação da vossa disponibilidade para o seguinte transfer:\n\n- Ref.: *${r.id}*\n- Cliente: ${r.clientNom||'—'}\n- Telemóvel: ${formaterTelephonePourMessageWa(r.telephone||r.clientTel)}\n- Data: *${fmtD(r.dateTransfer)} às ${fmtH(r.heureTransfer)}*\n- Partida: ${r.pointDepart||'—'}${r.adresseDepart?' ('+r.adresseDepart+')':''}\n- Destino: ${r.destination||'—'}${r.adresseDestination?' ('+r.adresseDestination+')':''}\n- ${r.personnes||'—'} pax · ${r.malas||'0'} malas${r.numVol?'\n- Voo: '+r.numVol:''}${r.numTransport?'\n- Transporte: '+r.numTransport:''}\n- Preço: *${r.prixFinal?r.prixFinal+' €':'A confirmar'}*\n\nPor favor confirme respondendo:\n- *confirmado*\n- ou indique qualquer impedimento`,
+  fr:(r,hotelNom)=>`*DEMANDE DE CONFIRMATION — ${hotelNom||'Next Level Premium Hotels'}*\n\nNotre équipe vous demande de confirmer votre disponibilité pour le transfert suivant :\n\n- Réf. : *${r.id}*\n- Client : ${r.clientNom||'—'}\n- Téléphone : ${formaterTelephonePourMessageWa(r.telephone||r.clientTel)}\n- Date : *${fmtD(r.dateTransfer)} à ${fmtH(r.heureTransfer)}*\n- Départ : ${r.pointDepart||'—'}${r.adresseDepart?' ('+r.adresseDepart+')':''}\n- Destination : ${r.destination||'—'}${r.adresseDestination?' ('+r.adresseDestination+')':''}\n- ${r.personnes||'—'} pax · ${r.malas||'0'} bagages${r.numVol?'\n- Vol : '+r.numVol:''}${r.numTransport?'\n- Transport : '+r.numTransport:''}\n- Prix : *${r.prixFinal?r.prixFinal+' €':'À confirmer'}*\n\nMerci de confirmer en répondant :\n- *confirmé*\n- ou indiquer tout empêchement`,
+  en:(r,hotelNom)=>`*CONFIRMATION REQUEST — ${hotelNom||'Next Level Premium Hotels'}*\n\nOur team requests your confirmation of availability for the following transfer:\n\n- Ref.: *${r.id}*\n- Client: ${r.clientNom||'—'}\n- Phone: ${formaterTelephonePourMessageWa(r.telephone||r.clientTel)}\n- Date: *${fmtD(r.dateTransfer)} at ${fmtH(r.heureTransfer)}*\n- From: ${r.pointDepart||'—'}${r.adresseDepart?' ('+r.adresseDepart+')':''}\n- To: ${r.destination||'—'}${r.adresseDestination?' ('+r.adresseDestination+')':''}\n- ${r.personnes||'—'} pax · ${r.malas||'0'} bags${r.numVol?'\n- Flight: '+r.numVol:''}${r.numTransport?'\n- Transport: '+r.numTransport:''}\n- Price: *${r.prixFinal?r.prixFinal+' €':'To confirm'}*\n\nPlease confirm by replying:\n- *confirmed*\n- or indicate any issue`,
+  es:(r,hotelNom)=>`*SOLICITUD DE CONFIRMACIÓN — ${hotelNom||'Next Level Premium Hotels'}*\n\nNuestro equipo solicita que confirme su disponibilidad para el siguiente traslado:\n\n- Ref.: *${r.id}*\n- Cliente: ${r.clientNom||'—'}\n- Teléfono: ${formaterTelephonePourMessageWa(r.telephone||r.clientTel)}\n- Fecha: *${fmtD(r.dateTransfer)} a las ${fmtH(r.heureTransfer)}*\n- Salida: ${r.pointDepart||'—'}${r.adresseDepart?' ('+r.adresseDepart+')':''}\n- Destino: ${r.destination||'—'}${r.adresseDestination?' ('+r.adresseDestination+')':''}\n- ${r.personnes||'—'} pax · ${r.malas||'0'} maletas${r.numVol?'\n- Vuelo: '+r.numVol:''}${r.numTransport?'\n- Transporte: '+r.numTransport:''}\n- Precio: *${r.prixFinal?r.prixFinal+' €':'A confirmar'}*\n\nPor favor confirme respondiendo:\n- *confirmado*\n- o indique cualquier impedimento`
 };
 
 function agWaSignFooter(lang, signerName){
@@ -4558,15 +4599,20 @@ function nettoyerPrefixeFeuilleTelephone(v){
 }
 function formaterTelephonePourMessageWa(v){
   const s=nettoyerPrefixeFeuilleTelephone(v);
-  return s||'—';
+  if(!s) return '—';
+  const aff=formaterTelephoneAffichageWaFromRaw(s);
+  return aff||s;
 }
 function formaterTelephoneAffichageWaFromRaw(p){
   const raw=nettoyerPrefixeFeuilleTelephone(p);
   if(!raw) return '';
   const compact=raw.replace(/[\s\u00A0\u2007\u202F\-\.\(\)\u2010\u2011\u2012\u2013\u2014\u2015]/g,'');
   if(!compact) return raw;
-  if(compact.slice(0,2)==='00') return compact;
-  if(compact[0]==='+') return compact;
+  if(compact.slice(0,2)==='00') return '+'+compact.slice(2).replace(/\D/g,'');
+  if(compact[0]==='+'){
+    const rest=compact.slice(1).replace(/\D/g,'');
+    return rest?'+'+rest:compact;
+  }
   const digits=normaliserDigitsPourWaMeClient(raw);
   return digits?'+'+digits:raw;
 }
@@ -4630,7 +4676,9 @@ function renderAgWaTargets(ag){
   let html='';
   if(ag.whatsappGroupUrl) html+=`<button type="button" class="btn btn-ag-wa btn-sm" onclick="openAgWAGroup()">🔗 Grupo WhatsApp</button>`;
   (ag.whatsappNumerosWaMe||[]).forEach((waMe,i)=>{
-    const label=(ag.whatsappNumerosAffiche&&ag.whatsappNumerosAffiche[i])||('+'+waMe);
+    let label=(ag.whatsappNumerosAffiche&&ag.whatsappNumerosAffiche[i])||'';
+    if(!label) label='+'+waMe;
+    else if(label.charAt(0)!=='+'&&!/^https?:/i.test(label)) label=formaterTelephoneAffichageWaFromRaw(label)||('+'+waMe);
     html+=`<button type="button" class="btn btn-ag-wa btn-sm" onclick="openAgWANum(${i})">💬 ${label}</button>`;
   });
   el.innerHTML=html;
@@ -5216,12 +5264,24 @@ async function openEmailMailboxMessage(messageId){
     if(m.bodyHtml){
       htmlBox.innerHTML='';
       const ifr=document.createElement('iframe');
-      ifr.setAttribute('sandbox','');
-      ifr.style.cssText='width:100%;min-height:360px;border:0;background:#fff';
+      ifr.setAttribute('sandbox','allow-same-origin');
+      ifr.setAttribute('title','Email body');
+      ifr.style.cssText='width:100%;max-width:100%;min-height:420px;height:min(62vh,720px);border:0;background:#fff;display:block';
       htmlBox.appendChild(ifr);
-      ifr.srcdoc=String(m.bodyHtml);
+      const wrapCss='<style>html,body{margin:0;padding:12px;max-width:100%;overflow-x:hidden;word-wrap:break-word;overflow-wrap:anywhere;box-sizing:border-box;font-family:Arial,sans-serif;font-size:14px;line-height:1.45;color:#111}img,table,pre,code,iframe,video{max-width:100%!important;height:auto!important}table{table-layout:fixed;width:100%!important}td,th{word-wrap:break-word;overflow-wrap:anywhere}</style>';
+      const raw=String(m.bodyHtml||'');
+      ifr.srcdoc=raw.indexOf('<html')>=0||raw.indexOf('<HTML')>=0
+        ? raw.replace(/<head([^>]*)>/i,'<head$1>'+wrapCss)
+        : '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+wrapCss+'</head><body>'+raw+'</body></html>';
+      ifr.onload=function(){
+        try{
+          const doc=ifr.contentDocument||ifr.contentWindow.document;
+          const h=Math.max(320, Math.min(doc.documentElement.scrollHeight||0, 900));
+          ifr.style.height=h+'px';
+        }catch(e){}
+      };
     }else{
-      htmlBox.innerHTML=`<pre style="white-space:pre-wrap;font-size:12px;margin:0">${escEm(m.bodyPlain||'')}</pre>`;
+      htmlBox.innerHTML=`<pre style="white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;font-size:13px;margin:0;padding:12px">${escEm(m.bodyPlain||'')}</pre>`;
     }
   }catch(err){
     if(msg){msg.textContent=String(err.message||err);msg.className='modal-msg error show';}
