@@ -1,0 +1,8 @@
+FICHIER SOURCE ORIGINAL
+=======================
+
+Nom : originaux/staff-reception-2.1/Staff_reception_2.1 NLPH.html
+
+Variante PC.
+
+Regenerer depuis le fichier source 2.1 (pas staff-reception).
