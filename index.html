@@ -666,12 +666,6 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
   .toast{left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));max-width:none}
 }
 </style>
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="favicon.ico" type="image/x-icon" sizes="32x32">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="NLPH Staff 2.1">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
 
@@ -1235,6 +1229,18 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
 .em-cat-tabs .email-tab{flex:0 0 auto;min-height:36px;padding:6px 12px;touch-action:manipulation}
 .em-list-wrap{flex:1;max-height:calc(100vh - 280px);min-height:360px;overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border2);border-radius:var(--r);background:var(--white)}
 .em-list-wrap button{width:100%;box-sizing:border-box;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.em-row{text-align:left;border:0;border-bottom:1px solid var(--border2);padding:12px 14px;cursor:pointer;width:100%;font-family:inherit;display:block}
+.em-row.em-unread{font-weight:700;color:var(--text);border-left:3px solid #1a73e8;background:rgba(26,115,232,.06)}
+.em-row.em-read{font-weight:400;color:var(--tm);border-left:3px solid transparent;background:transparent}
+.em-row[data-sel="1"]{background:var(--gold-s)!important}
+.em-row-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;font-size:12px;margin-bottom:4px;min-width:0}
+.em-row-from{min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.35}
+.em-row-date{color:var(--ts);white-space:nowrap;flex-shrink:0;font-size:11px}
+.em-row-subj{font-size:13px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.em-row-status{font-size:10px;margin-left:4px}
+.em-row-status.unread{color:#1a73e8}
+.em-row-status.read{color:var(--ts)}
+.em-unread-badge{display:inline-block;width:8px;height:8px;border-radius:50%;background:#1a73e8;margin-right:6px;vertical-align:middle;flex-shrink:0}
 .em-detail{
   min-height:360px;
   border:1px solid var(--border2);
@@ -1293,30 +1299,80 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
   .em-detail{grid-column:1 / -1;max-height:none;overflow:visible}
   .em-list-wrap{max-height:min(42vh,420px);min-height:240px}
 }
+/* Téléphone / tablette étroite — liste ↔ lecture plein écran */
 @media(max-width:768px){
-  #section-email.section{padding:10px;padding-bottom:max(20px,env(safe-area-inset-bottom))}
-  #section-email .em-card{border-radius:var(--r-lg);overflow:visible}
-  .em-body{padding:10px;gap:10px}
-  .em-hint{font-size:11px;padding:8px 12px}
-  .em-mbox-grid{display:flex;flex-direction:column;gap:10px;min-height:0}
+  #section-email.section{padding:8px;padding-bottom:max(24px,env(safe-area-inset-bottom));max-width:100vw;overflow-x:hidden}
+  #section-email .em-card{border-radius:var(--r-lg);overflow:visible;max-width:100%}
+  .em-body{padding:8px;gap:8px}
+  .em-hint{font-size:11px;padding:8px 10px}
+  .em-hdr-acts{width:100%}
+  .em-hdr-acts .btn{flex:1;min-height:44px}
+  .em-mbox-grid{display:flex;flex-direction:column;gap:8px;min-height:0;width:100%}
   .em-folder-nav{
     flex-direction:row;flex-wrap:nowrap;max-height:none;overflow-x:auto;overflow-y:hidden;
     gap:6px;padding:8px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;
+    overscroll-behavior-x:contain;
   }
-  .em-folder-btn{width:auto!important;flex:0 0 auto;white-space:nowrap;min-height:42px;padding:8px 12px!important}
-  .em-list-wrap{max-height:none;min-height:48vh;flex:1}
+  .em-folder-btn{width:auto!important;flex:0 0 auto;white-space:nowrap;min-height:44px;padding:8px 12px!important;font-size:12px!important}
+  .em-list-wrap{
+    max-height:none;
+    min-height:min(58dvh,58vh);
+    flex:1;
+    border-radius:10px;
+  }
+  .em-row{padding:14px 12px;min-height:64px}
+  .em-row-top{flex-wrap:wrap;gap:4px 10px;font-size:13px}
+  .em-row-from{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .em-row-date{width:100%;text-align:left;order:3;font-size:11px;margin-top:2px}
+  .em-row-subj{font-size:14px;-webkit-line-clamp:3}
   .em-cat-tabs{padding-bottom:4px}
-  .em-detail{max-height:none;min-height:0;padding:12px;overflow:visible}
-  .em-back-list{display:inline-flex!important;align-items:center}
+  .em-cat-tabs .email-tab{min-height:40px;padding:8px 12px;font-size:12px}
+  .em-detail{
+    max-height:none;min-height:0;padding:10px;
+    overflow:visible;border-radius:10px;
+    width:100%;box-sizing:border-box;
+  }
+  .em-back-list{
+    display:inline-flex!important;align-items:center;justify-content:center;
+    position:sticky;top:0;z-index:5;
+    width:100%;margin-bottom:12px;min-height:44px;
+    background:var(--surface);border:1px solid var(--border)!important;
+    border-radius:10px;font-weight:600;
+  }
+  .em-detail-actions{gap:8px}
+  .em-detail-actions .btn{flex:1 1 calc(50% - 8px);min-height:44px;justify-content:center}
+  .em-detail-subject{font-size:16px;line-height:1.3}
+  .em-detail-headers{font-size:12px}
   .em-mbox-grid[data-view="list"] .em-detail{display:none}
   .em-mbox-grid[data-view="detail"] .em-list-col{display:none}
   .em-mbox-grid[data-view="detail"] .em-folder-nav{display:none}
   #email-panel-mailbox.em-view-detail .em-search-row{display:none}
   #email-panel-mailbox.em-view-detail .em-account{display:none}
-  .em-detail-html{min-height:50vh;overflow:visible}
-  .em-detail-html iframe{min-height:50vh}
-  .em-main-tabs{margin:0 -4px;padding-left:4px;padding-right:4px}
-  .em-search-input{font-size:16px}
+  #section-email.em-reading .em-hint,
+  #section-email.em-reading .em-main-tabs,
+  #section-email.em-reading .card-hdr{display:none}
+  .em-detail-html{min-height:min(55dvh,55vh);overflow:visible;border-radius:8px}
+  .em-detail-html iframe{min-height:min(55dvh,55vh)}
+  .em-main-tabs{margin:0 -2px;padding-left:2px;padding-right:2px}
+  .em-search-input{font-size:16px;min-height:44px}
+  .em-compose-acts{flex-direction:column}
+  .em-compose-acts .btn{width:100%;justify-content:center}
+  .em-textarea{min-height:200px;font-size:16px}
+  .em-field{font-size:16px;min-height:44px}
+  .em-panel-compose{max-width:100%}
+}
+/* Très petits écrans (≈ iPhone SE / compact) */
+@media(max-width:430px){
+  #section-email.section{padding:6px;padding-bottom:max(20px,env(safe-area-inset-bottom))}
+  .em-body{padding:6px;gap:6px}
+  .em-hint{display:none}
+  .em-list-wrap{min-height:min(62dvh,62vh)}
+  .em-row{padding:12px 10px}
+  .em-row-subj{font-size:13px}
+  .em-detail{padding:8px}
+  .em-detail-subject{font-size:15px}
+  .em-detail-actions .btn{flex:1 1 100%}
+  .em-folder-btn{min-height:40px;padding:7px 10px!important;font-size:11px!important}
 }
 @media(min-width:769px){
   .em-back-list{display:none!important}
@@ -5006,16 +5062,22 @@ function switchEmailFolder(folder){
 function emailBackToList(){
   const grid=document.getElementById('em-mbox-grid');
   const panel=document.getElementById('email-panel-mailbox');
+  const sec=document.getElementById('section-email');
   if(grid)grid.setAttribute('data-view','list');
   if(panel)panel.classList.remove('em-view-detail');
+  if(sec)sec.classList.remove('em-reading');
   try{ window.scrollTo({top:0,behavior:'smooth'}); }catch(e){}
 }
 
 function emailShowDetailMobile(){
   const grid=document.getElementById('em-mbox-grid');
   const panel=document.getElementById('email-panel-mailbox');
+  const sec=document.getElementById('section-email');
   if(grid)grid.setAttribute('data-view','detail');
   if(panel)panel.classList.add('em-view-detail');
+  if(sec&&window.matchMedia&&window.matchMedia('(max-width:768px)').matches){
+    sec.classList.add('em-reading');
+  }
   try{
     const d=document.getElementById('em-mbox-detail');
     if(d)d.scrollIntoView({behavior:'smooth',block:'start'});
@@ -5136,31 +5198,39 @@ function fmtEmailDate(iso){
 }
 
 function markEmailRowReadLocal(messageId){
-  const btn=document.querySelector('#em-mbox-list button[data-mid="'+String(messageId).replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"]');
-  if(!btn){
-    document.querySelectorAll('#em-mbox-list button[data-mid]').forEach(el=>{
-      if(el.getAttribute('data-mid')===messageId){
-        el.classList.remove('em-unread');
-        el.classList.add('em-read');
-        el.style.fontWeight='400';
-        el.style.borderLeft='3px solid transparent';
-        el.style.color='var(--tm)';
-        el.style.background=el.getAttribute('data-sel')==='1'?'var(--gold-s)':'transparent';
-        const badge=el.querySelector('.em-unread-badge');
-        if(badge)badge.remove();
-        const lab=el.querySelector('span span');
+  if(Array.isArray(S.emailListCache)){
+    const cached=S.emailListCache.find(m=>m&&m.id===messageId);
+    if(cached)cached.unread=false;
+  }
+  const apply=(btn)=>{
+    if(!btn)return;
+    btn.classList.remove('em-unread');
+    btn.classList.add('em-read');
+    btn.style.fontWeight='';
+    btn.style.borderLeft='';
+    btn.style.color='';
+    btn.style.background='';
+    const badge=btn.querySelector('.em-unread-badge');
+    if(badge)badge.remove();
+    btn.querySelectorAll('.em-row-status').forEach(sp=>{
+      sp.textContent='Lu';
+      sp.classList.remove('unread');
+      sp.classList.add('read');
+    });
+    btn.querySelectorAll('span').forEach(sp=>{
+      if(sp.classList.contains('em-row-status'))return;
+      if(sp.textContent&&sp.textContent.trim()==='Non lu'){
+        sp.textContent='Lu';
+        sp.style.color='var(--ts)';
       }
     });
-    return;
-  }
-  btn.classList.remove('em-unread');
-  btn.classList.add('em-read');
-  btn.style.fontWeight='400';
-  btn.style.borderLeft='3px solid transparent';
-  btn.style.color='var(--tm)';
-  btn.style.background=btn.getAttribute('data-sel')==='1'?'var(--gold-s)':'transparent';
-  const badge=btn.querySelector('.em-unread-badge');
-  if(badge)badge.remove();
+  };
+  const sel='#em-mbox-list button[data-mid="'+String(messageId).replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"]';
+  let btn=document.querySelector(sel);
+  if(btn){apply(btn);return;}
+  document.querySelectorAll('#em-mbox-list button[data-mid]').forEach(el=>{
+    if(el.getAttribute('data-mid')===messageId)apply(el);
+  });
 }
 
 async function loadEmailMailboxList(){
@@ -5197,20 +5267,15 @@ async function loadEmailMailboxList(){
       const who=folder==='sent'?(m.to||m.from||'—'):(m.from||m.to||'—');
       const star=m.starred?'⭐ ':'';
       const draftMark=(m.folder==='drafts'||folder==='drafts')?'<span style="color:var(--danger)">Rascunho </span>':'';
-      const unreadBadge=isUnread?'<span class="em-unread-badge" style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#1a73e8;margin-right:6px;vertical-align:middle"></span>':'';
-      const rowStyle=[
-        'text-align:left','border:0','border-bottom:1px solid var(--border2)','padding:10px 12px','cursor:pointer',
-        'border-left:3px solid '+(isUnread?'#1a73e8':'transparent'),
-        'font-weight:'+(isUnread?'700':'400'),
-        'color:'+(isUnread?'var(--text)':'var(--tm)'),
-        'background:'+(isSel?'var(--gold-s)':(isUnread?'rgba(26,115,232,.06)':'transparent'))
-      ].join(';');
-      html+=`<button type="button" class="${isUnread?'em-unread':'em-read'}" data-mid="${escEm(m.id)}" data-sel="${isSel?'1':'0'}" onclick="openEmailMailboxMessage(this.getAttribute('data-mid'))" style="${rowStyle}">
-        <div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:2px">
-          <span>${unreadBadge}${star}${escEm(who)}${isUnread?' <span style="font-size:10px;color:#1a73e8">Non lu</span>':' <span style="font-size:10px;color:var(--ts)">Lu</span>'}</span>
-          <span style="color:var(--ts);white-space:nowrap">${escEm(fmtEmailDate(m.date))}</span>
+      const unreadBadge=isUnread?'<span class="em-unread-badge" aria-hidden="true"></span>':'';
+      const statusCls=isUnread?'em-row-status unread':'em-row-status read';
+      const statusTxt=isUnread?'Non lu':'Lu';
+      html+=`<button type="button" class="em-row ${isUnread?'em-unread':'em-read'}" data-mid="${escEm(m.id)}" data-sel="${isSel?'1':'0'}" onclick="openEmailMailboxMessage(this.getAttribute('data-mid'))">
+        <div class="em-row-top">
+          <span class="em-row-from">${unreadBadge}${star}${escEm(who)} <span class="${statusCls}">${statusTxt}</span></span>
+          <span class="em-row-date">${escEm(fmtEmailDate(m.date))}</span>
         </div>
-        <div style="font-size:13px">${draftMark}${escEm(m.subject||'(sans objet)')}</div>
+        <div class="em-row-subj">${draftMark}${escEm(m.subject||'(sans objet)')}</div>
       </button>`;
     });
     html+='</div>';
@@ -5267,13 +5332,21 @@ async function openEmailMailboxMessage(messageId){
       const ifr=document.createElement('iframe');
       ifr.setAttribute('sandbox','allow-same-origin');
       ifr.setAttribute('title','Email body');
-      ifr.style.cssText='width:100%;max-width:100%;min-height:480px;border:0;background:#fff;display:block';
+      const isPhone=window.matchMedia&&window.matchMedia('(max-width:768px)').matches;
+      const minH=isPhone?Math.max(280,Math.round(window.innerHeight*0.45)):480;
+      ifr.style.cssText='width:100%;max-width:100%;min-height:'+minH+'px;border:0;background:#fff;display:block';
       htmlBox.appendChild(ifr);
-      const wrapCss='<style>html,body{margin:0;padding:14px;max-width:100%;overflow-x:hidden;overflow-y:visible;word-wrap:break-word;overflow-wrap:anywhere;box-sizing:border-box;font-family:Arial,sans-serif;font-size:14px;line-height:1.5;color:#111}img,table,pre,code,iframe,video{max-width:100%!important;height:auto!important}table{table-layout:fixed;width:100%!important}td,th{word-wrap:break-word;overflow-wrap:anywhere}</style>';
+      const wrapCss='<style>html,body{margin:0;padding:12px;max-width:100%;overflow-x:hidden;overflow-y:visible;word-wrap:break-word;overflow-wrap:anywhere;box-sizing:border-box;font-family:Arial,sans-serif;font-size:'+(isPhone?'15':'14')+'px;line-height:1.55;color:#111;-webkit-text-size-adjust:100%}img,table,pre,code,iframe,video{max-width:100%!important;height:auto!important}table{table-layout:fixed;width:100%!important}td,th{word-wrap:break-word;overflow-wrap:anywhere}@media(max-width:480px){body{padding:10px;font-size:15px}}</style>';
       const raw=String(m.bodyHtml||'');
       ifr.srcdoc=raw.indexOf('<html')>=0||raw.indexOf('<HTML')>=0
-        ? raw.replace(/<head([^>]*)>/i,'<head$1>'+wrapCss)
-        : '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+wrapCss+'</head><body>'+raw+'</body></html>';
+        ? raw.replace(/<head([^>]*)>/i,'<head$1><meta name="viewport" content="width=device-width,initial-scale=1">'+wrapCss)
+        : '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+wrapCss+'<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" type="image/x-icon" sizes="32x32">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NLPH Staff 2.1">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head><body>'+raw+'</body></html>';
       const fitIframe=function(){
         try{
           const doc=ifr.contentDocument||ifr.contentWindow.document;
@@ -5284,7 +5357,7 @@ async function openEmailMailboxMessage(messageId){
             body?body.offsetHeight:0,
             html?html.scrollHeight:0,
             html?html.offsetHeight:0,
-            480
+            minH
           );
           ifr.style.height=h+'px';
           htmlBox.style.minHeight=h+'px';
@@ -5294,9 +5367,10 @@ async function openEmailMailboxMessage(messageId){
         fitIframe();
         setTimeout(fitIframe,200);
         setTimeout(fitIframe,800);
+        setTimeout(fitIframe,1600);
       };
     }else{
-      htmlBox.innerHTML=`<pre style="white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;font-size:13px;margin:0;padding:12px">${escEm(m.bodyPlain||'')}</pre>`;
+      htmlBox.innerHTML=`<pre style="white-space:pre-wrap;word-break:break-word;overflow-wrap:anywhere;font-size:14px;margin:0;padding:12px;line-height:1.5">${escEm(m.bodyPlain||'')}</pre>`;
     }
   }catch(err){
     if(msg){msg.textContent=String(err.message||err);msg.className='modal-msg error show';}
@@ -5540,6 +5614,5 @@ document.addEventListener('keydown',e=>{
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {});
 }
-</script>
-</body>
+</script></body>
 </html>
