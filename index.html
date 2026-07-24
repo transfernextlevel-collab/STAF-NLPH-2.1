@@ -1102,48 +1102,88 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
     </div>
   </div>
 
-  <!-- TAB EMAIL (2.1) — même API_URL + boîte Gmail (lecture dossiers) -->
+  <!-- TAB EMAIL (2.1) — boîte Gmail complète (dossiers + catégories + recherche + compose) -->
   <div class="section" id="section-email">
     <div class="card fadein">
       <div class="card-hdr">
         <div class="card-ttl" id="lbl-email-ttl">✉️ Email</div>
         <div class="hdr-acts">
-          <button class="btn btn-ghost btn-sm" type="button" onclick="loadEmailTab()" id="btn-email-refresh">↻</button>
+          <button class="btn btn-navy btn-sm" type="button" onclick="switchEmailPanel('compose')" id="btn-email-compose">✏️ Compor</button>
+          <button class="btn btn-ghost btn-sm" type="button" onclick="loadEmailTab()" id="btn-email-refresh">↻ Atualizar</button>
         </div>
       </div>
       <div style="padding:12px 16px;font-size:12px;color:var(--ts);background:var(--surface);border-bottom:1px solid var(--border2)" id="lbl-email-hint">
-        Même API Apps Script. Envoi confirmations + lecture de la boîte Gmail du compte ERP (reçus, envoyés, notifications, spam, brouillons). Après mise à jour backend : redéployer + ré-autoriser Gmail.
+        Paramètres email complets (type Gmail) via la même API : reçus, envoyés, catégories, spam, brouillons, recherche, lecture et composition. Compte = Apps Script ERP.
       </div>
-      <div style="padding:16px;display:grid;gap:14px;max-width:1100px">
+      <div style="padding:16px;display:grid;gap:14px;max-width:1280px">
         <div class="email-tabs" id="email-main-tabs">
           <div class="email-tab active" data-empanel="mailbox" onclick="switchEmailPanel('mailbox')" id="em-tab-mailbox">Boîte</div>
-          <div class="email-tab" data-empanel="send" onclick="switchEmailPanel('send')" id="em-tab-send">Enviar confirmação</div>
-          <div class="email-tab" data-empanel="templates" onclick="switchEmailPanel('templates')" id="em-tab-tpl">Modelos (API)</div>
+          <div class="email-tab" data-empanel="compose" onclick="switchEmailPanel('compose')" id="em-tab-compose">Compor</div>
+          <div class="email-tab" data-empanel="send" onclick="switchEmailPanel('send')" id="em-tab-send">Confirmação reserva</div>
+          <div class="email-tab" data-empanel="templates" onclick="switchEmailPanel('templates')" id="em-tab-tpl">Modelos</div>
         </div>
 
         <div id="email-panel-mailbox">
           <div id="em-mbox-account" style="font-size:12px;color:var(--tm);margin-bottom:10px">—</div>
-          <div class="email-tabs" id="email-folder-tabs" style="flex-wrap:wrap">
-            <div class="email-tab active" data-folder="inbox" onclick="switchEmailFolder('inbox')">Reçus</div>
-            <div class="email-tab" data-folder="sent" onclick="switchEmailFolder('sent')">Envoyés</div>
-            <div class="email-tab" data-folder="notifications" onclick="switchEmailFolder('notifications')">Notifications</div>
-            <div class="email-tab" data-folder="spam" onclick="switchEmailFolder('spam')">Spam</div>
-            <div class="email-tab" data-folder="drafts" onclick="switchEmailFolder('drafts')">Brouillons</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center">
+            <input type="search" id="em-mbox-search" placeholder="Pesquisar correio…" style="flex:1;min-width:200px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)" onkeydown="if(event.key==='Enter'){event.preventDefault();runEmailMailboxSearch();}">
+            <button type="button" class="btn btn-navy btn-sm" onclick="runEmailMailboxSearch()">🔍 Pesquisar</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="clearEmailMailboxSearch()">✕</button>
           </div>
-          <div style="display:grid;grid-template-columns:minmax(260px,1fr) minmax(280px,1.4fr);gap:12px;align-items:start" id="em-mbox-grid">
-            <div class="tbl-wrap" id="em-mbox-list" style="max-height:520px;overflow:auto;border:1px solid var(--border2);border-radius:var(--r)"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
+          <div style="display:grid;grid-template-columns:200px minmax(0,1fr) minmax(280px,1.2fr);gap:12px;align-items:start" id="em-mbox-grid" class="em-mbox-grid">
+            <nav id="email-folder-tabs" style="display:flex;flex-direction:column;gap:2px;border:1px solid var(--border2);border-radius:var(--r);padding:8px;background:var(--surface);max-height:560px;overflow:auto">
+              <button type="button" class="email-tab active" data-folder="inbox" onclick="switchEmailFolder('inbox')" style="text-align:left;width:100%">📥 Caixa de entrada</button>
+              <button type="button" class="email-tab" data-folder="starred" onclick="switchEmailFolder('starred')" style="text-align:left;width:100%">⭐ Com estrela</button>
+              <button type="button" class="email-tab" data-folder="snoozed" onclick="switchEmailFolder('snoozed')" style="text-align:left;width:100%">💤 Suspenso</button>
+              <button type="button" class="email-tab" data-folder="important" onclick="switchEmailFolder('important')" style="text-align:left;width:100%">❗ Importante</button>
+              <button type="button" class="email-tab" data-folder="sent" onclick="switchEmailFolder('sent')" style="text-align:left;width:100%">📤 Enviado</button>
+              <button type="button" class="email-tab" data-folder="scheduled" onclick="switchEmailFolder('scheduled')" style="text-align:left;width:100%">🗓️ Agendado</button>
+              <button type="button" class="email-tab" data-folder="drafts" onclick="switchEmailFolder('drafts')" style="text-align:left;width:100%">📝 Rascunhos</button>
+              <button type="button" class="email-tab" data-folder="spam" onclick="switchEmailFolder('spam')" style="text-align:left;width:100%">🚫 Spam</button>
+              <button type="button" class="email-tab" data-folder="trash" onclick="switchEmailFolder('trash')" style="text-align:left;width:100%">🗑️ Lixo</button>
+              <div style="height:1px;background:var(--border2);margin:8px 4px"></div>
+              <button type="button" class="email-tab" data-folder="updates" onclick="switchEmailFolder('updates')" style="text-align:left;width:100%">🔔 Atualizações</button>
+              <button type="button" class="email-tab" data-folder="all" onclick="switchEmailFolder('all')" style="text-align:left;width:100%">📚 Todos</button>
+            </nav>
+            <div>
+              <div class="email-tabs" id="email-cat-tabs" style="flex-wrap:wrap;margin-bottom:8px">
+                <div class="email-tab" data-folder="primary" onclick="switchEmailFolder('primary')">Principal</div>
+                <div class="email-tab" data-folder="promotions" onclick="switchEmailFolder('promotions')">Promoções</div>
+                <div class="email-tab" data-folder="social" onclick="switchEmailFolder('social')">Social</div>
+                <div class="email-tab" data-folder="updates" onclick="switchEmailFolder('updates')">Atualizações</div>
+                <div class="email-tab" data-folder="forums" onclick="switchEmailFolder('forums')">Fóruns</div>
+              </div>
+              <div class="tbl-wrap" id="em-mbox-list" style="max-height:520px;overflow:auto;border:1px solid var(--border2);border-radius:var(--r)"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
+            </div>
             <div id="em-mbox-detail" style="min-height:240px;border:1px solid var(--border2);border-radius:var(--r);padding:14px;background:var(--surface)">
-              <p style="color:var(--ts);font-size:13px" id="em-mbox-detail-empty">Sélectionnez un message.</p>
+              <p style="color:var(--ts);font-size:13px" id="em-mbox-detail-empty">Sélectionnez un message (reçus ou envoyés).</p>
               <div id="em-mbox-detail-body" style="display:none">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="replyEmailMailboxMessage()">↩ Répondre</button>
+                </div>
                 <div style="font-size:11px;color:var(--ts);margin-bottom:6px" id="em-mbox-meta"></div>
                 <div style="font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text)" id="em-mbox-subject"></div>
                 <div style="font-size:12px;color:var(--tm);margin-bottom:12px;line-height:1.5" id="em-mbox-headers"></div>
                 <div id="em-mbox-attachments" style="font-size:12px;margin-bottom:10px"></div>
+                <div id="em-mbox-thread" style="font-size:11px;color:var(--ts);margin-bottom:10px"></div>
                 <div class="email-preview-content" id="em-mbox-html" style="max-height:420px;overflow:auto;border:1px solid var(--border2);border-radius:var(--r);padding:12px;background:#fff"></div>
               </div>
             </div>
           </div>
           <div class="modal-msg" id="em-mbox-msg"></div>
+        </div>
+
+        <div id="email-panel-compose" style="display:none;max-width:720px">
+          <div class="f-group"><label>Para (to) *</label><input type="email" id="em-comp-to" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)" placeholder="destinatario@email.com"></div>
+          <div class="f-group"><label>Cc</label><input type="text" id="em-comp-cc" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)"></div>
+          <div class="f-group"><label>Assunto *</label><input type="text" id="em-comp-subject" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text)"></div>
+          <div class="f-group"><label>Mensagem *</label><textarea id="em-comp-body" rows="10" style="width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-family:inherit"></textarea></div>
+          <input type="hidden" id="em-comp-reply-id" value="">
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="button" class="btn btn-navy" onclick="sendEmailCompose()">✉️ Enviar</button>
+            <button type="button" class="btn btn-ghost" onclick="clearEmailCompose()">Limpar</button>
+          </div>
+          <div class="modal-msg" id="em-comp-msg"></div>
         </div>
 
         <div id="email-panel-send" style="display:none">
@@ -1168,6 +1208,13 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
       </div>
     </div>
   </div>
+  <style>
+  @media (max-width:900px){
+    #em-mbox-grid.em-mbox-grid{grid-template-columns:1fr!important}
+    #email-folder-tabs{flex-direction:row!important;flex-wrap:wrap;max-height:none!important}
+    #email-folder-tabs .email-tab{width:auto!important}
+  }
+  </style>
 
   </div><!-- /main -->
 </div><!-- /app-screen -->
@@ -4798,9 +4845,11 @@ function switchEmailPanel(which){
     el.classList.toggle('active', el.getAttribute('data-empanel')===which);
   });
   const mbox=document.getElementById('email-panel-mailbox');
+  const comp=document.getElementById('email-panel-compose');
   const send=document.getElementById('email-panel-send');
   const tpl=document.getElementById('email-panel-templates');
   if(mbox)mbox.style.display=which==='mailbox'?'':'none';
+  if(comp)comp.style.display=which==='compose'?'':'none';
   if(send)send.style.display=which==='send'?'':'none';
   if(tpl)tpl.style.display=which==='templates'?'':'none';
   if(which==='templates')loadEmailTemplatesTab();
@@ -4808,13 +4857,36 @@ function switchEmailPanel(which){
   if(which==='send'){ fillEmailTabLangSelect(); fillEmailTabResaSelect(); }
 }
 
+function highlightEmailFolders(folder){
+  document.querySelectorAll('#email-folder-tabs [data-folder], #email-cat-tabs [data-folder]').forEach(el=>{
+    el.classList.toggle('active', el.getAttribute('data-folder')===folder);
+  });
+}
+
 function switchEmailFolder(folder){
   S.emailFolder=folder||'inbox';
-  document.querySelectorAll('#email-folder-tabs .email-tab').forEach(el=>{
-    el.classList.toggle('active', el.getAttribute('data-folder')===S.emailFolder);
-  });
+  S.emailSearchQ='';
+  const search=document.getElementById('em-mbox-search');
+  if(search)search.value='';
+  highlightEmailFolders(S.emailFolder);
   clearEmailMailboxDetail();
   loadEmailMailboxList();
+}
+
+function runEmailMailboxSearch(){
+  const q=(document.getElementById('em-mbox-search')?.value||'').trim();
+  S.emailSearchQ=q;
+  if(!q){ switchEmailFolder(S.emailFolder||'inbox'); return; }
+  document.querySelectorAll('#email-folder-tabs [data-folder], #email-cat-tabs [data-folder]').forEach(el=>el.classList.remove('active'));
+  clearEmailMailboxDetail();
+  loadEmailMailboxList();
+}
+
+function clearEmailMailboxSearch(){
+  S.emailSearchQ='';
+  const search=document.getElementById('em-mbox-search');
+  if(search)search.value='';
+  switchEmailFolder(S.emailFolder||'inbox');
 }
 
 function clearEmailMailboxDetail(){
@@ -4823,6 +4895,7 @@ function clearEmailMailboxDetail(){
   if(empty)empty.style.display='';
   if(body)body.style.display='none';
   S.emailSelectedId='';
+  S.emailCurrentMsg=null;
 }
 
 function fillEmailTabLangSelect(){
@@ -4889,14 +4962,14 @@ async function loadEmailMailbox(){
   const acc=document.getElementById('em-mbox-account');
   const msg=document.getElementById('em-mbox-msg');
   if(msg){msg.className='modal-msg';msg.textContent='';}
+  highlightEmailFolders(S.emailFolder||'inbox');
   try{
     const d=await api({action:'gmail_getMailboxMeta',adminToken:S.token});
     if(d&&d.sessionExpired){doLogout();return;}
     if(acc){
       if(d&&d.success){
-        acc.textContent=d.account
-          ? ('Boîte : '+d.account+(d.note?' — '+d.note:''))
-          : (d.note||'Boîte Gmail du compte Apps Script');
+        const draftN=d.folders&&d.folders.drafts&&d.folders.drafts.countApprox!=null?(' · Rascunhos: '+d.folders.drafts.countApprox):'';
+        acc.textContent=(d.account?('Boîte : '+d.account):'Boîte Gmail ERP')+draftN+(d.note?' — '+d.note:'');
       }else{
         acc.textContent=(d&&d.error)||'Meta boîte indisponible — déployez le backend mis à jour et ré-autorisez Gmail.';
       }
@@ -4911,14 +4984,26 @@ function escEm(s){
   return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+function fmtEmailDate(iso){
+  if(!iso)return '';
+  try{
+    const d=new Date(iso);
+    if(isNaN(d.getTime()))return String(iso).slice(0,16);
+    return d.toLocaleString(undefined,{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  }catch(e){ return String(iso).replace('T',' ').slice(0,16); }
+}
+
 async function loadEmailMailboxList(){
   const wrap=document.getElementById('em-mbox-list');
   const msg=document.getElementById('em-mbox-msg');
   if(!wrap)return;
   const folder=S.emailFolder||'inbox';
+  const q=S.emailSearchQ||'';
   wrap.innerHTML='<div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div>';
   try{
-    const d=await api({action:'gmail_listFolder',adminToken:S.token,folder,start:0,maxResults:40});
+    const payload={action:'gmail_listFolder',adminToken:S.token,start:0,maxResults:40};
+    if(q)payload.q=q; else payload.folder=folder;
+    const d=await api(payload);
     if(!d||!d.success){
       if(d&&d.sessionExpired){doLogout();return;}
       wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${escEm((d&&d.error)||'Erreur lecture dossier')}</p>`;
@@ -4927,18 +5012,24 @@ async function loadEmailMailboxList(){
     }
     const list=d.messages||[];
     if(!list.length){
-      wrap.innerHTML='<p style="padding:16px;color:var(--ts)">Aucun message dans ce dossier.</p>';
+      wrap.innerHTML=`<p style="padding:16px;color:var(--ts)">${q?'Nenhum resultado.':'Aucun message dans ce dossier.'}</p>`;
       return;
     }
     let html='<div style="display:flex;flex-direction:column">';
     list.forEach(m=>{
       const unread=m.unread?'font-weight:700;':'';
       const bg=m.id===S.emailSelectedId?'background:var(--gold-s);':'';
+      const who=folder==='sent'?(m.to||m.from||'—'):(m.from||m.to||'—');
+      const star=m.starred?'⭐ ':'';
+      const att=m.hasAttachments?(' 📎'+(m.attachmentNames&&m.attachmentNames[0]?' '+escEm(m.attachmentNames[0]):'')):'';
+      const draftMark=(m.folder==='drafts'||folder==='drafts')?'<span style="color:var(--danger)">Rascunho </span>':'';
       html+=`<button type="button" data-mid="${escEm(m.id)}" onclick="openEmailMailboxMessage(this.getAttribute('data-mid'))" style="text-align:left;border:0;border-bottom:1px solid var(--border2);padding:10px 12px;cursor:pointer;background:transparent;color:var(--text);${unread}${bg}">
-        <div style="font-size:12px;margin-bottom:2px">${escEm(m.from||m.to||'—')}</div>
-        <div style="font-size:13px">${escEm(m.subject||'(sans objet)')}</div>
+        <div style="display:flex;justify-content:space-between;gap:8px;font-size:12px;margin-bottom:2px">
+          <span>${star}${escEm(who)}</span>
+          <span style="color:var(--ts);white-space:nowrap">${escEm(fmtEmailDate(m.date))}</span>
+        </div>
+        <div style="font-size:13px">${draftMark}${escEm(m.subject||'(sans objet)')}${att}</div>
         <div style="font-size:11px;color:var(--ts);margin-top:2px">${escEm(m.snippet||'')}</div>
-        <div style="font-size:10px;color:var(--ts);margin-top:4px">${escEm((m.date||'').replace('T',' ').slice(0,16))}</div>
       </button>`;
     });
     html+='</div>';
@@ -4960,9 +5051,11 @@ async function openEmailMailboxMessage(messageId){
     document.getElementById('em-mbox-headers').textContent='';
     document.getElementById('em-mbox-html').innerHTML='';
     document.getElementById('em-mbox-attachments').innerHTML='';
+    const th=document.getElementById('em-mbox-thread');
+    if(th)th.innerHTML='';
   }
   try{
-    const d=await api({action:'gmail_getMessage',adminToken:S.token,messageId});
+    const d=await api({action:'gmail_getMessage',adminToken:S.token,messageId,includeThread:true});
     if(!d||!d.success){
       if(d&&d.sessionExpired){doLogout();return;}
       if(msg){msg.textContent=(d&&d.error)||'Erreur';msg.className='modal-msg error show';}
@@ -4971,16 +5064,26 @@ async function openEmailMailboxMessage(messageId){
       return;
     }
     const m=d.message||{};
-    document.getElementById('em-mbox-meta').textContent=(m.date||'').replace('T',' ').slice(0,19);
+    S.emailCurrentMsg=m;
+    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'');
     document.getElementById('em-mbox-subject').textContent=m.subject||'(sans objet)';
     document.getElementById('em-mbox-headers').innerHTML=
       `<div><strong>De :</strong> ${escEm(m.from)}</div>`+
       `<div><strong>À :</strong> ${escEm(m.to)}</div>`+
-      (m.cc?`<div><strong>Cc :</strong> ${escEm(m.cc)}</div>`:'');
+      (m.cc?`<div><strong>Cc :</strong> ${escEm(m.cc)}</div>`:'')+
+      (m.bcc?`<div><strong>Bcc :</strong> ${escEm(m.bcc)}</div>`:'')+
+      (m.replyTo?`<div><strong>Reply-To :</strong> ${escEm(m.replyTo)}</div>`:'');
     const atts=m.attachments||[];
     document.getElementById('em-mbox-attachments').innerHTML=atts.length
       ? ('📎 '+atts.map(a=>escEm(a.name||'fichier')+' ('+Math.round((a.size||0)/1024)+' Ko)').join(' · '))
       : '';
+    const thEl=document.getElementById('em-mbox-thread');
+    if(thEl){
+      const thread=m.thread||[];
+      thEl.innerHTML=thread.length>1
+        ? ('Fil ('+thread.length+') : '+thread.map(t=>escEm((t.from||'').split('<')[0].trim())+' · '+escEm(fmtEmailDate(t.date))).join(' → '))
+        : '';
+    }
     const htmlBox=document.getElementById('em-mbox-html');
     if(m.bodyHtml){
       htmlBox.innerHTML='';
@@ -4995,6 +5098,61 @@ async function openEmailMailboxMessage(messageId){
     loadEmailMailboxList();
   }catch(err){
     if(msg){msg.textContent=String(err.message||err);msg.className='modal-msg error show';}
+  }
+}
+
+function extractEmailAddr(s){
+  const m=String(s||'').match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  return m?m[0]:String(s||'').trim();
+}
+
+function replyEmailMailboxMessage(){
+  const m=S.emailCurrentMsg;
+  if(!m){ if(typeof toast==='function')toast('Ouvrez un message d’abord','error'); return; }
+  switchEmailPanel('compose');
+  document.getElementById('em-comp-to').value=extractEmailAddr(m.from);
+  document.getElementById('em-comp-cc').value='';
+  const sub=m.subject||'';
+  document.getElementById('em-comp-subject').value=/^re:/i.test(sub)?sub:('Re: '+sub);
+  document.getElementById('em-comp-body').value='\n\n———\n'+String(m.bodyPlain||'').slice(0,2000);
+  document.getElementById('em-comp-reply-id').value=m.id||'';
+}
+
+function clearEmailCompose(){
+  ['em-comp-to','em-comp-cc','em-comp-subject','em-comp-body','em-comp-reply-id'].forEach(id=>{
+    const el=document.getElementById(id); if(el)el.value='';
+  });
+  const msg=document.getElementById('em-comp-msg');
+  if(msg){msg.className='modal-msg';msg.textContent='';}
+}
+
+async function sendEmailCompose(){
+  const to=document.getElementById('em-comp-to')?.value.trim();
+  const cc=document.getElementById('em-comp-cc')?.value.trim();
+  const subject=document.getElementById('em-comp-subject')?.value.trim();
+  const body=document.getElementById('em-comp-body')?.value.trim();
+  const replyId=document.getElementById('em-comp-reply-id')?.value.trim();
+  const msg=document.getElementById('em-comp-msg');
+  if(!to||!subject||!body){
+    if(msg){msg.textContent='Para, assunto e mensagem são obrigatórios.';msg.className='modal-msg error show';}
+    return;
+  }
+  if(msg){msg.textContent='A enviar…';msg.className='modal-msg show';}
+  try{
+    const payload={action:'gmail_sendMessage',adminToken:S.token,to,subject,body};
+    if(cc)payload.cc=cc;
+    if(replyId)payload.replyToMessageId=replyId;
+    const d=await api(payload);
+    if(d&&d.success){
+      if(msg){msg.textContent='✅ Email enviado (visível em Enviado).';msg.className='modal-msg success show';}
+      if(typeof toast==='function')toast('✉️ Enviado','success');
+      clearEmailCompose();
+    }else{
+      if(d&&d.sessionExpired){doLogout();return;}
+      if(msg){msg.textContent='❌ '+(d&&d.error?d.error:'Erro');msg.className='modal-msg error show';}
+    }
+  }catch(err){
+    if(msg){msg.textContent='❌ '+(err.message||err);msg.className='modal-msg error show';}
   }
 }
 
