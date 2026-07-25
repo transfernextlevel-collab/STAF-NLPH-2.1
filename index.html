@@ -1112,7 +1112,7 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
           <button class="btn btn-ghost btn-sm" type="button" onclick="loadEmailTab()" id="btn-email-refresh">↻</button>
         </div>
       </div>
-      <div class="em-hint" id="lbl-email-hint">Boîte Gmail (reçus / envoyés / dossiers) — même API ERP.</div>
+      <div class="em-hint" id="lbl-email-hint">Boîte Gmail — dossiers, catégories, lecture, composition formatée.</div>
       <div class="em-body">
         <div class="email-tabs em-main-tabs" id="email-main-tabs">
           <div class="email-tab active" data-empanel="mailbox" onclick="switchEmailPanel('mailbox')" id="em-tab-mailbox">Boîte</div>
@@ -1128,8 +1128,12 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
             <button type="button" class="btn btn-navy btn-sm em-search-btn" onclick="runEmailMailboxSearch()">🔍</button>
             <button type="button" class="btn btn-ghost btn-sm em-search-btn" onclick="clearEmailMailboxSearch()">✕</button>
           </div>
+          <div class="em-nav-mobile-bar">
+            <button type="button" class="btn btn-ghost btn-sm em-nav-toggle" id="em-nav-toggle" onclick="toggleEmailNavPanels()">📁 Dossiers &amp; catégories</button>
+          </div>
           <div id="em-mbox-grid" class="em-mbox-grid" data-view="list">
             <nav id="email-folder-tabs" class="em-folder-nav" aria-label="Dossiers email">
+              <div class="em-nav-label">Classement</div>
               <button type="button" class="email-tab em-folder-btn active" data-folder="inbox" onclick="switchEmailFolder('inbox')">📥 Entrada</button>
               <button type="button" class="email-tab em-folder-btn" data-folder="starred" onclick="switchEmailFolder('starred')">⭐ Estrela</button>
               <button type="button" class="email-tab em-folder-btn" data-folder="snoozed" onclick="switchEmailFolder('snoozed')">💤 Suspenso</button>
@@ -1139,11 +1143,11 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
               <button type="button" class="email-tab em-folder-btn" data-folder="drafts" onclick="switchEmailFolder('drafts')">📝 Rascunhos</button>
               <button type="button" class="email-tab em-folder-btn" data-folder="spam" onclick="switchEmailFolder('spam')">🚫 Spam</button>
               <button type="button" class="email-tab em-folder-btn" data-folder="trash" onclick="switchEmailFolder('trash')">🗑️ Lixo</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="updates" onclick="switchEmailFolder('updates')">🔔 Atualizações</button>
               <button type="button" class="email-tab em-folder-btn" data-folder="all" onclick="switchEmailFolder('all')">📚 Todos</button>
             </nav>
             <div class="em-list-col">
               <div class="email-tabs em-cat-tabs" id="email-cat-tabs">
+                <div class="em-nav-label em-nav-label-inline">Catégories</div>
                 <div class="email-tab" data-folder="primary" onclick="switchEmailFolder('primary')">Principal</div>
                 <div class="email-tab" data-folder="promotions" onclick="switchEmailFolder('promotions')">Promoções</div>
                 <div class="email-tab" data-folder="social" onclick="switchEmailFolder('social')">Social</div>
@@ -1156,8 +1160,14 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
               <button type="button" class="btn btn-ghost btn-sm em-back-list" onclick="emailBackToList()">← Lista</button>
               <p class="em-detail-empty" id="em-mbox-detail-empty">Sélectionnez un message.</p>
               <div id="em-mbox-detail-body" class="em-detail-body" style="display:none">
-                <div class="em-detail-actions">
+                <div class="em-detail-actions" id="em-mbox-actions">
                   <button type="button" class="btn btn-ghost btn-sm" onclick="replyEmailMailboxMessage()">↩ Répondre</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="replyAllEmailMailboxMessage()">↩↩ Tous</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="forwardEmailMailboxMessage()">↪ Transférer</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="em-act-star" onclick="emailMsgAction('star')">⭐ Étoile</button>
+                  <button type="button" class="btn btn-ghost btn-sm" id="em-act-unread" onclick="emailMsgAction('markUnread')">● Non lu</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="emailMsgAction('archive')">⬇ Arquivar</button>
+                  <button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="emailMsgAction('trash')">🗑️ Eliminar</button>
                 </div>
                 <div class="em-detail-meta" id="em-mbox-meta"></div>
                 <div class="em-detail-subject" id="em-mbox-subject"></div>
@@ -1172,11 +1182,31 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
         </div>
 
         <div id="email-panel-compose" class="em-panel-compose" style="display:none">
-          <div class="f-group"><label>Para (to) *</label><input type="email" id="em-comp-to" class="em-field" placeholder="destinatario@email.com"></div>
-          <div class="f-group"><label>Cc</label><input type="text" id="em-comp-cc" class="em-field"></div>
-          <div class="f-group"><label>Assunto *</label><input type="text" id="em-comp-subject" class="em-field"></div>
-          <div class="f-group"><label>Mensagem *</label><textarea id="em-comp-body" rows="8" class="em-field em-textarea"></textarea></div>
+          <div class="em-comp-fields">
+            <div class="f-group"><label>Para (To) *</label><input type="email" id="em-comp-to" class="em-field" placeholder="destinatario@email.com" autocomplete="email"></div>
+            <div class="em-comp-ccbcc-toggle">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="toggleComposeCcBcc()">+ Cc / Bcc</button>
+            </div>
+            <div id="em-comp-cc-wrap" class="f-group" style="display:none"><label>Cc</label><input type="text" id="em-comp-cc" class="em-field" placeholder="copie@email.com"></div>
+            <div id="em-comp-bcc-wrap" class="f-group" style="display:none"><label>Bcc</label><input type="text" id="em-comp-bcc" class="em-field" placeholder="copie cachée"></div>
+            <div class="f-group"><label>Assunto *</label><input type="text" id="em-comp-subject" class="em-field"></div>
+            <div class="f-group">
+              <label>Mensagem *</label>
+              <div class="em-fmt-bar" role="toolbar" aria-label="Formatage">
+                <button type="button" class="em-fmt-btn" title="Gras" onclick="emFmt('bold')"><b>B</b></button>
+                <button type="button" class="em-fmt-btn" title="Italique" onclick="emFmt('italic')"><i>I</i></button>
+                <button type="button" class="em-fmt-btn" title="Souligné" onclick="emFmt('underline')"><u>U</u></button>
+                <button type="button" class="em-fmt-btn" title="Liste" onclick="emFmt('insertUnorderedList')">• Liste</button>
+                <button type="button" class="em-fmt-btn" title="Liste numérotée" onclick="emFmt('insertOrderedList')">1. Liste</button>
+                <button type="button" class="em-fmt-btn" title="Lien" onclick="emFmtLink()">🔗</button>
+                <button type="button" class="em-fmt-btn" title="Texte normal" onclick="emFmt('removeFormat')">Tx</button>
+              </div>
+              <div id="em-comp-editor" class="em-comp-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Escreva a mensagem…"></div>
+              <textarea id="em-comp-body" class="em-field em-textarea" style="display:none" rows="8"></textarea>
+            </div>
+          </div>
           <input type="hidden" id="em-comp-reply-id" value="">
+          <input type="hidden" id="em-comp-mode" value="new">
           <div class="em-compose-acts">
             <button type="button" class="btn btn-navy" onclick="sendEmailCompose()">✉️ Enviar</button>
             <button type="button" class="btn btn-ghost" onclick="clearEmailCompose()">Limpar</button>
@@ -1218,6 +1248,18 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
 .em-search-row{display:flex;gap:8px;align-items:stretch;flex-wrap:nowrap}
 .em-search-input{flex:1;min-width:0;padding:12px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:15px;box-sizing:border-box}
 .em-search-btn{min-width:44px;min-height:44px;touch-action:manipulation;justify-content:center}
+.em-nav-mobile-bar{display:none}
+.em-nav-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ts);padding:4px 8px 6px}
+.em-nav-label-inline{flex:0 0 auto;align-self:center;padding:0 6px 0 0;white-space:nowrap}
+.em-fmt-bar{display:flex;flex-wrap:wrap;gap:4px;padding:6px;border:1px solid var(--border);border-bottom:0;border-radius:8px 8px 0 0;background:var(--surface)}
+.em-fmt-btn{min-width:36px;min-height:36px;padding:6px 10px;border:1px solid var(--border2);border-radius:6px;background:var(--white);color:var(--text);font-size:13px;cursor:pointer;touch-action:manipulation;font-family:inherit}
+.em-fmt-btn:active{background:var(--gold-s)}
+.em-comp-editor{
+  min-height:180px;max-height:50vh;overflow:auto;padding:12px;border:1px solid var(--border);border-radius:0 0 8px 8px;
+  background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;font-family:inherit;-webkit-overflow-scrolling:touch;
+}
+.em-comp-editor:empty:before{content:attr(data-placeholder);color:var(--ts);pointer-events:none}
+.em-comp-ccbcc-toggle{margin:-4px 0 8px}
 /* PC: 3 colonnes larges — dossiers | liste | lecture */
 .em-mbox-grid{
   display:grid;
@@ -1308,32 +1350,56 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
 }
 /* Téléphone / tablette étroite — liste ↔ lecture plein écran */
 @media(max-width:768px){
-  #section-email.section{padding:8px;padding-bottom:max(24px,env(safe-area-inset-bottom));max-width:100vw;overflow-x:hidden}
-  #section-email .em-card{border-radius:var(--r-lg);overflow:visible;max-width:100%}
-  .em-body{padding:8px;gap:8px}
-  .em-hint{font-size:11px;padding:8px 10px}
-  .em-hdr-acts{width:100%}
-  .em-hdr-acts .btn{flex:1;min-height:44px}
-  .em-mbox-grid{display:flex;flex-direction:column;gap:8px;min-height:0;width:100%}
-  .em-folder-nav{
-    flex-direction:row;flex-wrap:nowrap;max-height:none;overflow-x:auto;overflow-y:hidden;
-    gap:4px;padding:6px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;
-    overscroll-behavior-x:contain;
+  /* Topbar compacte sur onglet Email — plus de place pour la liste */
+  #app-screen.email-focus .topbar{min-height:48px;padding-top:max(4px,env(safe-area-inset-top));padding-bottom:4px;gap:6px}
+  #app-screen.email-focus .topbar-right{
+    grid-template-columns:auto minmax(0,1fr) auto auto;
+    gap:6px;padding:0;
   }
-  .em-folder-btn{width:auto!important;flex:0 0 auto;white-space:nowrap;min-height:40px;padding:6px 10px!important;font-size:11px!important}
+  #app-screen.email-focus .topbar-right .btn-tb[onclick*="Nova"],
+  #app-screen.email-focus .topbar-right #btn-nova,
+  #app-screen.email-focus .topbar-right #lbl-new-resa,
+  #app-screen.email-focus .topbar .theme-row,
+  #app-screen.email-focus .topbar-theme-inline,
+  #app-screen.email-focus .work-bg-anchor{display:none!important}
+  #app-screen.email-focus .topbar-right .btn-tb{min-height:40px;padding:6px 8px;font-size:10px}
+  #app-screen.email-focus .topbar .theme-btn{min-width:40px!important;min-height:40px!important;width:40px!important;height:40px!important}
+  #section-email.section{padding:6px;padding-bottom:max(16px,env(safe-area-inset-bottom));max-width:100vw;overflow-x:hidden}
+  #section-email .em-card{border-radius:var(--r-lg);overflow:visible;max-width:100%}
+  #section-email .card-hdr{padding:8px 10px;gap:6px}
+  #section-email .card-ttl{font-size:15px}
+  .em-body{padding:6px;gap:6px}
+  .em-hint{display:none}
+  .em-account{display:none}
+  .em-hdr-acts{width:100%}
+  .em-hdr-acts .btn{flex:1;min-height:40px}
+  .em-main-tabs{padding-bottom:4px;gap:4px}
+  .em-main-tabs .email-tab{min-height:36px;padding:6px 10px;font-size:12px}
+  .em-nav-mobile-bar{display:block;margin-bottom:4px}
+  .em-nav-toggle{width:100%;min-height:40px;justify-content:center;font-weight:600}
+  .em-mbox-grid{display:flex;flex-direction:column;gap:6px;min-height:0;width:100%}
+  /* Dossiers + catégories repliés par défaut sur téléphone */
+  .em-folder-nav,.em-cat-tabs{display:none}
+  #email-panel-mailbox.em-nav-open .em-folder-nav{
+    display:flex;flex-direction:row;flex-wrap:wrap;max-height:none;overflow:auto;
+    gap:4px;padding:8px;scrollbar-width:thin;-webkit-overflow-scrolling:touch;
+  }
+  #email-panel-mailbox.em-nav-open .em-cat-tabs{
+    display:flex;flex-wrap:wrap;gap:4px;padding:6px 0;overflow:visible;
+  }
+  .em-folder-btn{width:auto!important;flex:0 0 auto;white-space:nowrap;min-height:36px;padding:6px 10px!important;font-size:11px!important}
   .em-list-wrap{
     max-height:none;
-    min-height:min(58dvh,58vh);
+    min-height:min(68dvh,68vh);
     flex:1;
     border-radius:10px;
   }
-  .em-row{padding:14px 12px;min-height:64px}
-  .em-row-top{flex-wrap:wrap;gap:4px 10px;font-size:13px}
+  .em-row{padding:12px 10px;min-height:56px}
+  .em-row-top{flex-wrap:wrap;gap:4px 10px;font-size:12px}
   .em-row-from{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
   .em-row-date{width:100%;text-align:left;order:3;font-size:11px;margin-top:2px}
-  .em-row-subj{font-size:14px;-webkit-line-clamp:3}
-  .em-cat-tabs{padding-bottom:2px;gap:3px}
-  .em-cat-tabs .email-tab{min-height:36px;padding:6px 10px;font-size:11px}
+  .em-row-subj{font-size:13px;-webkit-line-clamp:2}
+  .em-cat-tabs .email-tab{min-height:34px;padding:6px 10px;font-size:11px}
   .em-detail{
     max-height:none;min-height:0;padding:10px;
     overflow:visible;border-radius:10px;
@@ -1346,19 +1412,20 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
     background:var(--surface);border:1px solid var(--border)!important;
     border-radius:10px;font-weight:600;
   }
-  .em-detail-actions{gap:8px}
-  .em-detail-actions .btn{flex:1 1 calc(50% - 8px);min-height:44px;justify-content:center}
+  .em-detail-actions{gap:6px;display:flex;flex-wrap:wrap}
+  .em-detail-actions .btn{flex:1 1 calc(33.33% - 6px);min-height:40px;justify-content:center;font-size:11px;padding:6px 4px}
   .em-detail-subject{font-size:16px;line-height:1.3}
   .em-detail-headers{font-size:12px}
   .em-mbox-grid[data-view="list"] .em-detail{display:none}
   .em-mbox-grid[data-view="detail"] .em-list-col{display:none}
   .em-mbox-grid[data-view="detail"] .em-folder-nav{display:none}
-  #email-panel-mailbox.em-view-detail .em-search-row{display:none}
+  .em-mbox-grid[data-view="detail"] ~ .em-nav-mobile-bar,
+  #email-panel-mailbox.em-view-detail .em-nav-mobile-bar,
+  #email-panel-mailbox.em-view-detail .em-search-row,
   #email-panel-mailbox.em-view-detail .em-account{display:none}
   #section-email.em-reading .em-hint,
   #section-email.em-reading .em-main-tabs,
   #section-email.em-reading .card-hdr{display:none}
-  /* Lecture plein viewport téléphone */
   #section-email.em-reading{
     padding:0!important;
     margin:0;
@@ -1396,12 +1463,13 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
   .em-detail-html{min-height:min(50dvh,50vh);overflow:auto;border-radius:8px}
   .em-detail-html iframe{min-height:min(45dvh,45vh)}
   .em-main-tabs{margin:0 -2px;padding-left:2px;padding-right:2px}
-  .em-search-input{font-size:16px;min-height:44px}
+  .em-search-input{font-size:16px;min-height:40px}
   .em-compose-acts{flex-direction:column}
   .em-compose-acts .btn{width:100%;justify-content:center}
-  .em-textarea{min-height:200px;font-size:16px}
+  .em-textarea,.em-comp-editor{min-height:200px;font-size:16px}
   .em-field{font-size:16px;min-height:44px}
   .em-panel-compose{max-width:100%}
+  .em-fmt-btn{min-width:40px;min-height:40px}
 }
 /* Très petits écrans (≈ iPhone SE / compact) */
 @media(max-width:430px){
@@ -1419,6 +1487,9 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
 }
 @media(min-width:769px){
   .em-back-list{display:none!important}
+  .em-nav-mobile-bar{display:none!important}
+  .em-folder-nav{display:flex}
+  .em-cat-tabs{display:flex}
   .em-mbox-grid[data-view="detail"] .em-list-col,
   .em-mbox-grid[data-view="list"] .em-detail{display:flex}
   .em-mbox-grid .em-detail{display:flex}
@@ -5053,6 +5124,8 @@ function showTab(name){
   document.getElementById('tab-'+name)?.classList.add('active');
   document.getElementById('section-'+name)?.classList.add('active');
   document.querySelectorAll('.nav-drawer-tab').forEach(el=>el.classList.toggle('active',el.getAttribute('data-tab')===name));
+  const app=document.getElementById('app-screen');
+  if(app)app.classList.toggle('email-focus', name==='email');
   closeNavDrawer();
   if(name==='reservas')loadReservas();
   else if(name==='upcoming'){ if(S.reservas.length)renderUpcoming(); else loadReservas(); }
@@ -5102,7 +5175,60 @@ function switchEmailFolder(folder){
   highlightEmailFolders(S.emailFolder);
   clearEmailMailboxDetail();
   emailBackToList();
+  const panel=document.getElementById('email-panel-mailbox');
+  const btn=document.getElementById('em-nav-toggle');
+  if(panel&&panel.classList.contains('em-nav-open')){
+    panel.classList.remove('em-nav-open');
+    if(btn)btn.textContent='📁 Dossiers & catégories';
+  }
   loadEmailMailboxList();
+}
+
+function toggleEmailNavPanels(){
+  const panel=document.getElementById('email-panel-mailbox');
+  const btn=document.getElementById('em-nav-toggle');
+  if(!panel)return;
+  const open=panel.classList.toggle('em-nav-open');
+  if(btn)btn.textContent=open?'📁 Masquer dossiers':'📁 Dossiers & catégories';
+}
+
+function toggleComposeCcBcc(){
+  const cc=document.getElementById('em-comp-cc-wrap');
+  const bcc=document.getElementById('em-comp-bcc-wrap');
+  if(!cc)return;
+  const hidden=cc.style.display==='none'||!cc.style.display;
+  // initial HTML has display:none inline
+  const willShow=cc.style.display==='none';
+  cc.style.display=willShow?'block':'none';
+  if(bcc)bcc.style.display=willShow?'block':'none';
+}
+
+function emFmt(cmd){
+  const ed=document.getElementById('em-comp-editor');
+  if(!ed)return;
+  ed.focus();
+  try{ document.execCommand(cmd,false,null); }catch(e){}
+}
+
+function emFmtLink(){
+  const url=prompt('URL do link:','https://');
+  if(!url)return;
+  const ed=document.getElementById('em-comp-editor');
+  if(ed)ed.focus();
+  try{ document.execCommand('createLink',false,url); }catch(e){}
+}
+
+function getComposeHtml(){
+  const ed=document.getElementById('em-comp-editor');
+  if(ed)return (ed.innerHTML||'').trim();
+  return (document.getElementById('em-comp-body')?.value||'').trim();
+}
+
+function setComposeHtml(html){
+  const ed=document.getElementById('em-comp-editor');
+  if(ed)ed.innerHTML=html||'';
+  const ta=document.getElementById('em-comp-body');
+  if(ta)ta.value=html||'';
 }
 
 function emailBackToList(){
@@ -5120,7 +5246,10 @@ function emailShowDetailMobile(){
   const panel=document.getElementById('email-panel-mailbox');
   const sec=document.getElementById('section-email');
   if(grid)grid.setAttribute('data-view','detail');
-  if(panel)panel.classList.add('em-view-detail');
+  if(panel){
+    panel.classList.add('em-view-detail');
+    panel.classList.remove('em-nav-open');
+  }
   if(sec&&window.matchMedia&&window.matchMedia('(max-width:768px)').matches){
     sec.classList.add('em-reading');
   }
@@ -5367,14 +5496,16 @@ async function openEmailMailboxMessage(messageId){
     }
     const m=d.message||{};
     S.emailCurrentMsg=m;
-    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'')+' · Lu';
+    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'')+(m.unread?' · Non lu':' · Lu');
     document.getElementById('em-mbox-subject').textContent=m.subject||'(sans objet)';
+    updateEmailDetailActionLabels(m);
     document.getElementById('em-mbox-headers').innerHTML=
       `<div><strong>De :</strong> ${escEm(m.from)}</div>`+
       `<div><strong>À :</strong> ${escEm(m.to)}</div>`+
       (m.cc?`<div><strong>Cc :</strong> ${escEm(m.cc)}</div>`:'')+
       (m.bcc?`<div><strong>Bcc :</strong> ${escEm(m.bcc)}</div>`:'')+
-      (m.replyTo?`<div><strong>Reply-To :</strong> ${escEm(m.replyTo)}</div>`:'');
+      (m.replyTo?`<div><strong>Reply-To :</strong> ${escEm(m.replyTo)}</div>`:'')+
+      `<div><strong>Date :</strong> ${escEm(fmtEmailDate(m.date))}</div>`;
     const atts=m.attachments||[];
     document.getElementById('em-mbox-attachments').innerHTML=atts.length
       ? ('📎 '+atts.map(a=>escEm(a.name||'fichier')+' ('+Math.round((a.size||0)/1024)+' Ko)').join(' · '))
@@ -5459,16 +5590,129 @@ function replyEmailMailboxMessage(){
   switchEmailPanel('compose');
   document.getElementById('em-comp-to').value=extractEmailAddr(m.from);
   document.getElementById('em-comp-cc').value='';
+  document.getElementById('em-comp-bcc').value='';
   const sub=m.subject||'';
   document.getElementById('em-comp-subject').value=/^re:/i.test(sub)?sub:('Re: '+sub);
-  document.getElementById('em-comp-body').value='\n\n———\n'+String(m.bodyPlain||'').slice(0,2000);
+  setComposeHtml('<p><br></p><p>———</p><pre style="white-space:pre-wrap;font-family:inherit;font-size:13px;color:#555">'+escEm(String(m.bodyPlain||'').slice(0,2000))+'</pre>');
   document.getElementById('em-comp-reply-id').value=m.id||'';
+  document.getElementById('em-comp-mode').value='reply';
+}
+
+function replyAllEmailMailboxMessage(){
+  const m=S.emailCurrentMsg;
+  if(!m){ if(typeof toast==='function')toast('Ouvrez un message d’abord','error'); return; }
+  switchEmailPanel('compose');
+  document.getElementById('em-comp-to').value=extractEmailAddr(m.from);
+  const ccParts=[];
+  String(m.to||'').split(/[,;]/).forEach(x=>{const a=extractEmailAddr(x);if(a)ccParts.push(a);});
+  String(m.cc||'').split(/[,;]/).forEach(x=>{const a=extractEmailAddr(x);if(a)ccParts.push(a);});
+  const me=(document.getElementById('em-mbox-account')?.textContent||'').match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+  const uniq=[...new Set(ccParts)].filter(a=>!me||a.toLowerCase()!==me[0].toLowerCase());
+  document.getElementById('em-comp-cc-wrap').style.display='block';
+  document.getElementById('em-comp-bcc-wrap').style.display='block';
+  document.getElementById('em-comp-cc').value=uniq.join(', ');
+  document.getElementById('em-comp-bcc').value='';
+  const sub=m.subject||'';
+  document.getElementById('em-comp-subject').value=/^re:/i.test(sub)?sub:('Re: '+sub);
+  setComposeHtml('<p><br></p><p>———</p><pre style="white-space:pre-wrap;font-family:inherit;font-size:13px;color:#555">'+escEm(String(m.bodyPlain||'').slice(0,2000))+'</pre>');
+  document.getElementById('em-comp-reply-id').value=m.id||'';
+  document.getElementById('em-comp-mode').value='replyAll';
+}
+
+function forwardEmailMailboxMessage(){
+  const m=S.emailCurrentMsg;
+  if(!m){ if(typeof toast==='function')toast('Ouvrez un message d’abord','error'); return; }
+  switchEmailPanel('compose');
+  document.getElementById('em-comp-to').value='';
+  document.getElementById('em-comp-cc').value='';
+  document.getElementById('em-comp-bcc').value='';
+  const sub=m.subject||'';
+  document.getElementById('em-comp-subject').value=/^fwd:/i.test(sub)||/^tr:/i.test(sub)?sub:('Fwd: '+sub);
+  const hdr='De: '+escEm(m.from)+'<br>À: '+escEm(m.to)+'<br>Date: '+escEm(fmtEmailDate(m.date))+'<br>Sujet: '+escEm(m.subject||'');
+  setComposeHtml('<p><br></p><p>——— Message transféré ———</p><p style="font-size:12px;color:#555">'+hdr+'</p><pre style="white-space:pre-wrap;font-family:inherit;font-size:13px;color:#555">'+escEm(String(m.bodyPlain||'').slice(0,4000))+'</pre>');
+  document.getElementById('em-comp-reply-id').value='';
+  document.getElementById('em-comp-mode').value='forward';
+}
+
+async function emailMsgAction(op){
+  const m=S.emailCurrentMsg;
+  const msg=document.getElementById('em-mbox-msg');
+  if(!m||!m.id){ if(typeof toast==='function')toast('Ouvrez un message d’abord','error'); return; }
+  let realOp=op;
+  if(op==='star') realOp=m.starred?'unstar':'star';
+  if(op==='trash'&&!confirm('Eliminar este email (mover para o lixo)?'))return;
+  try{
+    const d=await api({action:'gmail_messageAction',adminToken:S.token,messageId:m.id,op:realOp});
+    if(!d||!d.success){
+      if(d&&d.sessionExpired){doLogout();return;}
+      if(msg){msg.textContent=(d&&d.error)||'Erreur';msg.className='modal-msg error show';}
+      if(typeof toast==='function')toast((d&&d.error)||'Erreur','error');
+      return;
+    }
+    if(realOp==='trash'||realOp==='archive'){
+      if(typeof toast==='function')toast(realOp==='trash'?'Eliminado':'Arquivado','success');
+      clearEmailMailboxDetail();
+      emailBackToList();
+      loadEmailMailboxList();
+      return;
+    }
+    if(typeof d.unread==='boolean')m.unread=d.unread;
+    if(typeof d.starred==='boolean')m.starred=d.starred;
+    else if(realOp==='star')m.starred=true;
+    else if(realOp==='unstar')m.starred=false;
+    if(realOp==='markUnread'){ m.unread=true; markEmailRowUnreadLocal(m.id); }
+    else if(realOp==='markRead'){ m.unread=false; markEmailRowReadLocal(m.id); }
+    updateEmailDetailActionLabels(m);
+    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'')+(m.unread?' · Non lu':' · Lu');
+    if(typeof toast==='function')toast('OK','success');
+  }catch(err){
+    if(msg){msg.textContent=String(err.message||err);msg.className='modal-msg error show';}
+  }
+}
+
+function updateEmailDetailActionLabels(m){
+  const starBtn=document.getElementById('em-act-star');
+  const unreadBtn=document.getElementById('em-act-unread');
+  if(starBtn)starBtn.textContent=m&&m.starred?'☆ Retirer étoile':'⭐ Étoile';
+  if(unreadBtn){
+    unreadBtn.textContent=m&&m.unread?'○ Marquer lu':'● Non lu';
+    unreadBtn.setAttribute('onclick', m&&m.unread?"emailMsgAction('markRead')":"emailMsgAction('markUnread')");
+  }
+}
+
+function markEmailRowUnreadLocal(messageId){
+  if(Array.isArray(S.emailListCache)){
+    const cached=S.emailListCache.find(x=>x&&x.id===messageId);
+    if(cached)cached.unread=true;
+  }
+  document.querySelectorAll('#em-mbox-list button[data-mid]').forEach(btn=>{
+    if(btn.getAttribute('data-mid')!==messageId)return;
+    btn.classList.remove('em-read');
+    btn.classList.add('em-unread');
+    let badge=btn.querySelector('.em-unread-badge');
+    if(!badge){
+      badge=document.createElement('span');
+      badge.className='em-unread-badge';
+      badge.setAttribute('aria-hidden','true');
+      const from=btn.querySelector('.em-row-from');
+      if(from)from.insertBefore(badge,from.firstChild);
+    }
+    btn.querySelectorAll('.em-row-status').forEach(sp=>{
+      sp.textContent='Non lu';
+      sp.classList.remove('read');
+      sp.classList.add('unread');
+    });
+  });
 }
 
 function clearEmailCompose(){
-  ['em-comp-to','em-comp-cc','em-comp-subject','em-comp-body','em-comp-reply-id'].forEach(id=>{
+  ['em-comp-to','em-comp-cc','em-comp-bcc','em-comp-subject','em-comp-body','em-comp-reply-id'].forEach(id=>{
     const el=document.getElementById(id); if(el)el.value='';
   });
+  setComposeHtml('');
+  const mode=document.getElementById('em-comp-mode'); if(mode)mode.value='new';
+  const cc=document.getElementById('em-comp-cc-wrap'); if(cc)cc.style.display='none';
+  const bcc=document.getElementById('em-comp-bcc-wrap'); if(bcc)bcc.style.display='none';
   const msg=document.getElementById('em-comp-msg');
   if(msg){msg.className='modal-msg';msg.textContent='';}
 }
@@ -5476,30 +5720,33 @@ function clearEmailCompose(){
 async function sendEmailCompose(){
   const to=document.getElementById('em-comp-to')?.value.trim();
   const cc=document.getElementById('em-comp-cc')?.value.trim();
+  const bcc=document.getElementById('em-comp-bcc')?.value.trim();
   const subject=document.getElementById('em-comp-subject')?.value.trim();
-  const body=document.getElementById('em-comp-body')?.value.trim();
+  const htmlBody=getComposeHtml();
+  const plain=htmlBody.replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
   const replyId=document.getElementById('em-comp-reply-id')?.value.trim();
   const msg=document.getElementById('em-comp-msg');
-  if(!to||!subject||!body){
+  if(!to||!subject||!plain){
     if(msg){msg.textContent='Para, assunto e mensagem são obrigatórios.';msg.className='modal-msg error show';}
     return;
   }
   if(msg){msg.textContent='A enviar…';msg.className='modal-msg show';}
   try{
-    const payload={action:'gmail_sendMessage',adminToken:S.token,to,subject,body};
+    const payload={action:'gmail_sendMessage',adminToken:S.token,to,subject,body:plain,htmlBody:htmlBody};
     if(cc)payload.cc=cc;
+    if(bcc)payload.bcc=bcc;
     if(replyId)payload.replyToMessageId=replyId;
     const d=await api(payload);
     if(d&&d.success){
-      if(msg){msg.textContent='✅ Email enviado (visível em Enviado).';msg.className='modal-msg success show';}
-      if(typeof toast==='function')toast('✉️ Enviado','success');
+      if(msg){msg.textContent='✅ Email enviado.';msg.className='modal-msg success show';}
+      if(typeof toast==='function')toast('Email enviado','success');
       clearEmailCompose();
     }else{
       if(d&&d.sessionExpired){doLogout();return;}
-      if(msg){msg.textContent='❌ '+(d&&d.error?d.error:'Erro');msg.className='modal-msg error show';}
+      if(msg){msg.textContent=(d&&d.error)||'Erreur';msg.className='modal-msg error show';}
     }
   }catch(err){
-    if(msg){msg.textContent='❌ '+(err.message||err);msg.className='modal-msg error show';}
+    if(msg){msg.textContent=String(err.message||err);msg.className='modal-msg error show';}
   }
 }
 
