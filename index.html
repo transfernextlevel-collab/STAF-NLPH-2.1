@@ -1130,6 +1130,7 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
           </div>
           <div class="em-nav-mobile-bar">
             <button type="button" class="btn btn-ghost btn-sm em-nav-toggle" id="em-nav-toggle" onclick="toggleEmailNavPanels()">📁 Dossiers &amp; catégories</button>
+            <div class="em-current-folder" id="em-current-folder">Entrada</div>
           </div>
           <div id="em-mbox-grid" class="em-mbox-grid" data-view="list">
             <nav id="email-folder-tabs" class="em-folder-nav" aria-label="Dossiers email">
@@ -1216,8 +1217,14 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
 
         <div id="email-panel-send" style="display:none">
           <div class="f-group">
-            <label id="lbl-em-resa">Reserva (ID)</label>
-            <select id="em-tab-resa" class="em-field"></select>
+            <label>Pesquisar reserva</label>
+            <input type="search" id="em-tab-resa-q" class="em-field" placeholder="ID, nome, email, telefone, data, agência, estado…" enterkeyhint="search" oninput="filterEmailTabResas()" autocomplete="off">
+            <p class="em-tpl-hint" style="margin-top:6px">Pesquisa por nº reserva, nome, email, telemóvel, data, percurso, agência, estado — qualquer combinação.</p>
+          </div>
+          <div class="f-group">
+            <label id="lbl-em-resa">Reserva</label>
+            <select id="em-tab-resa" class="em-field" size="8" style="min-height:180px;height:auto"></select>
+            <div id="em-tab-resa-count" class="em-tpl-hint" style="margin-top:6px"></div>
           </div>
           <div class="f-group">
             <label id="lbl-em-lang">Idioma do email</label>
@@ -1230,7 +1237,10 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
           <div class="modal-msg" id="em-tab-msg"></div>
         </div>
         <div id="email-panel-templates" style="display:none">
-          <p class="em-tpl-hint" id="lbl-em-tpl-hint">Modelos via <code>getEmailTemplates</code>.</p>
+          <p class="em-tpl-hint" id="lbl-em-tpl-hint">Modelos da folha EMAIL_TEMPLATES (leitura). Usados pela confirmação de reserva.</p>
+          <div class="f-group" style="margin-bottom:10px">
+            <input type="search" id="em-tpl-q" class="em-field" placeholder="Filtrar modelos (idioma, assunto…)" oninput="filterEmailTemplatesTab()" autocomplete="off">
+          </div>
           <div class="tbl-wrap" id="em-tpl-wrap"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
         </div>
       </div>
@@ -1249,6 +1259,7 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
 .em-search-input{flex:1;min-width:0;padding:12px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:15px;box-sizing:border-box}
 .em-search-btn{min-width:44px;min-height:44px;touch-action:manipulation;justify-content:center}
 .em-nav-mobile-bar{display:none}
+.em-current-folder{font-size:12px;color:var(--tm);padding:4px 2px 0;font-weight:600}
 .em-nav-label{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ts);padding:4px 8px 6px}
 .em-nav-label-inline{flex:0 0 auto;align-self:center;padding:0 6px 0 0;white-space:nowrap}
 .em-fmt-bar{display:flex;flex-wrap:wrap;gap:4px;padding:6px;border:1px solid var(--border);border-bottom:0;border-radius:8px 8px 0 0;background:var(--surface)}
@@ -2436,10 +2447,10 @@ const WA_TPL={
 
 // LABELS UI (FR/PT/EN/ES)
 const LBL={
-  FR:{idleLogout:'Session fermée après 3 h sans activité.',adminRole:'Staff Hôtel',newResa:'+ Nouvelle',logout:'⎋ Déconnexion',tabRes:'Réservations',tabCreate:'Nouvelle',tabBilan:'Bilan',tabAg:'Agences',tabPr:'Prix',tabEmail:'Email',tabUpcoming:'Prochains Transferts',upcomingTitle:'Prochains Transferts',upcomingSub:'Transferts futurs non encore réalisés — par ordre chronologique',upcomingEmpty:'Aucun transfert futur en attente.',sUpcoming:'À réaliser',today:"Aujourd'hui",tomorrow:'Demain',sTotal:'Total',sPend:'Pendentes',sConf:'Confirmadas',sCanc:'Canceladas',sReal:'Realizadas',cardTtl:'Toutes les Réservations',fSearch:'Recherche',fStatut:'Statut',fAg:'Agence',fDs:'Date début',fDe:'Date fin',fType:'Type',btnReset:'✕ Effacer',bulkSel:'sélectionnée(s)',bulkEmail:'✉️ Email',bulkConf:'✅ Confirmer',bulkReal:'🏁 Réalisé',bulkPago:'💶 Payé',bulkCanc:'❌ Annuler',bulkDesel:'✕ Désélectionner',createTtl:'➕ Nouvelle Réservation',secClient:'👤 Client',secTransfer:'🚗 Transfer',secGestion:'⚙️ Gestion',crNom:'Nom Complet *',crEmail:'Email *',crTel:'Téléphone *',crPax:'Personnes *',crLang:'Langue de l\'email (25 langues)',btnCreate:'Créer la Réservation',bDs:'Période début',bDe:'Période fin',bilanEmpty:'Cliquez sur « Calculer » pour afficher le bilan',agTtl:'🏢 Gestion des Agences',agAdd:'Ajouter',agModalSub:'Session hôtel — pas de Plan B requis',prTtl:'💰 Tableau des Prix',modalDetail:'Détails de la Réservation',errEmpty:'Remplir tous les champs.',errConn:'Erreur de connexion.',errPwMatch:'Les mots de passe ne correspondent pas.',errPwShort:'Minimum 8 caractères.',okPw:'✅ Mot de passe changé !',loginTitle:'Accès Administration',adminId:'Identifiant Admin',adminPass:'Mot de Passe',loginBtn:'Accéder au Dashboard',resetLink:'Changer / Récupérer mot de passe',r1Title:'🔑 Récupérer Mot de Passe',r1Sub:'Identifiant + email enregistré dans PASSWORDS',r1Id:'Identifiant',r1Email:'Email enregistré',r1Btn:'Envoyer le Code',back1:'Retour',r2Title:'📧 Vérifier Code',r2New:'Nouveau mot de passe (min. 8)',r2Btn:'Changer',back2:'Nouveau code',pageOf:'sur',confirmCancel:'Annuler cette réservation',navSections:'Sections',navQuick:'Actions rapides',refreshBtn:'Actualiser',sessionExpired:'Session expirée.'},
-  PT:{idleLogout:'Sessão encerrada após 3 h sem atividade.',adminRole:'Staff Hotel',newResa:'+ Nova',logout:'⎋ Sair',tabRes:'Reservas',tabCreate:'Nova',tabBilan:'Balanço',tabAg:'Agências',tabPr:'Preços',tabEmail:'Email',tabUpcoming:'Próximas Transferências',upcomingTitle:'Próximas Transferências',upcomingSub:'Transfers futuros não realizados — por ordem cronológica',upcomingEmpty:'Nenhum transfer futuro pendente.',sUpcoming:'A Realizar',today:'Hoje',tomorrow:'Amanhã',sTotal:'Total',sPend:'Pendentes',sConf:'Confirmadas',sCanc:'Canceladas',sReal:'Realizadas',cardTtl:'Todas as Reservas',fSearch:'Pesquisa',fStatut:'Estado',fAg:'Agência',fDs:'Data início',fDe:'Data fim',fType:'Tipo',btnReset:'✕ Limpar',bulkSel:'selecionada(s)',bulkEmail:'✉️ Email',bulkConf:'✅ Confirmar',bulkReal:'🏁 Realizado',bulkPago:'💶 Pago',bulkCanc:'❌ Cancelar',bulkDesel:'✕ Desselecionar',createTtl:'➕ Nova Reserva',secClient:'👤 Cliente',secTransfer:'🚗 Transfer',secGestion:'⚙️ Gestão',crNom:'Nome Completo *',crEmail:'Email *',crTel:'Telemóvel *',crPax:'Pessoas *',crLang:'Idioma do email (25 línguas)',btnCreate:'Criar a Reserva',bDs:'Período início',bDe:'Período fim',bilanEmpty:'Clique em « Calcular » para ver o balanço',agTtl:'🏢 Gestão de Agências',agAdd:'Adicionar',agModalSub:'Conta staff — não requer sessão Plan B',prTtl:'💰 Tabela de Preços',modalDetail:'Detalhes da Reserva',errEmpty:'Preencher todos os campos.',errConn:'Erro de ligação.',errPwMatch:'As palavras-passe não coincidem.',errPwShort:'Mínimo 8 caracteres.',okPw:'✅ Palavra-passe alterada!',loginTitle:'Acesso Administração',adminId:'Identificador',adminPass:'Palavra-passe',loginBtn:'Aceder ao Dashboard',resetLink:'Alterar / Recuperar palavra-passe',r1Title:'🔑 Recuperar Palavra-passe',r1Sub:'Identificador + email registado na feuille PASSWORDS',r1Id:'Identificador',r1Email:'Email registado',r1Btn:'Enviar Código',back1:'Voltar',r2Title:'📧 Verificar Código',r2New:'Nova palavra-passe (min. 8)',r2Btn:'Alterar',back2:'Novo código',pageOf:'de',confirmCancel:'Cancelar esta reserva',navSections:'Secções',navQuick:'Ações rápidas',refreshBtn:'Atualizar',sessionExpired:'Sessão expirada.'},
-  EN:{idleLogout:'Session closed after 3 hours of inactivity.',adminRole:'Hotel Staff',newResa:'+ New',logout:'⎋ Sign out',tabRes:'Reservations',tabCreate:'New',tabBilan:'Report',tabAg:'Agencies',tabPr:'Prices',tabEmail:'Email',tabUpcoming:'Upcoming Transfers',upcomingTitle:'Upcoming Transfers',upcomingSub:'Future transfers not yet completed — in chronological order',upcomingEmpty:'No upcoming pending transfers.',sUpcoming:'Upcoming',today:'Today',tomorrow:'Tomorrow',sTotal:'Total',sPend:'Pending',sConf:'Confirmed',sCanc:'Cancelled',sReal:'Completed',cardTtl:'All Reservations',fSearch:'Search',fStatut:'Status',fAg:'Agency',fDs:'Start date',fDe:'End date',fType:'Type',btnReset:'✕ Clear',bulkSel:'selected',bulkEmail:'✉️ Email',bulkConf:'✅ Confirm',bulkReal:'🏁 Completed',bulkPago:'💶 Paid',bulkCanc:'❌ Cancel',bulkDesel:'✕ Deselect',createTtl:'➕ New Reservation',secClient:'👤 Client',secTransfer:'🚗 Transfer',secGestion:'⚙️ Management',crNom:'Full Name *',crEmail:'Email *',crTel:'Phone *',crPax:'Passengers *',crLang:'Email language (25 languages)',btnCreate:'Create Reservation',bDs:'Period start',bDe:'Period end',bilanEmpty:'Click "Calculate"',agTtl:'🏢 Agency Management',agAdd:'Add',agModalSub:'Staff login — no Plan B session needed',prTtl:'💰 Price Table',modalDetail:'Reservation Details',errEmpty:'Fill in all fields.',errConn:'Connection error.',errPwMatch:'Passwords do not match.',errPwShort:'Minimum 8 characters.',okPw:'✅ Password changed!',loginTitle:'Admin Access',adminId:'Admin ID',adminPass:'Password',loginBtn:'Access Dashboard',resetLink:'Change / Recover password',r1Title:'🔑 Recover Password',r1Sub:'ID + email registered in PASSWORDS sheet',r1Id:'Admin ID',r1Email:'Registered email',r1Btn:'Send Code',back1:'Back',r2Title:'📧 Verify Code',r2New:'New password (min. 8)',r2Btn:'Change',back2:'New code',pageOf:'of',confirmCancel:'Cancel this reservation',navSections:'Sections',navQuick:'Quick actions',refreshBtn:'Refresh',sessionExpired:'Session expired.'},
-  ES:{idleLogout:'Sesión cerrada tras 3 h sin actividad.',adminRole:'Staff Hotel',newResa:'+ Nueva',logout:'⎋ Salir',tabRes:'Reservas',tabCreate:'Nueva',tabBilan:'Balance',tabAg:'Agencias',tabPr:'Precios',tabEmail:'Email',tabUpcoming:'Próximas Transferencias',upcomingTitle:'Próximas Transferencias',upcomingSub:'Transferencias futuras no realizadas — en orden cronológico',upcomingEmpty:'No hay transferencias futuras pendientes.',sUpcoming:'A Realizar',today:'Hoy',tomorrow:'Mañana',sTotal:'Total',sPend:'Pendientes',sConf:'Confirmadas',sCanc:'Canceladas',sReal:'Realizadas',cardTtl:'Todas las Reservas',fSearch:'Búsqueda',fStatut:'Estado',fAg:'Agencia',fDs:'Fecha inicio',fDe:'Fecha fin',fType:'Tipo',btnReset:'✕ Borrar',bulkSel:'seleccionada(s)',bulkEmail:'✉️ Email',bulkConf:'✅ Confirmar',bulkReal:'🏁 Realizado',bulkPago:'💶 Pagado',bulkCanc:'❌ Cancelar',bulkDesel:'✕ Deseleccionar',createTtl:'➕ Nueva Reserva',secClient:'👤 Cliente',secTransfer:'🚗 Traslado',secGestion:'⚙️ Gestión',crNom:'Nombre Completo *',crEmail:'Email *',crTel:'Teléfono *',crPax:'Personas *',crLang:'Idioma del correo (25 idiomas)',btnCreate:'Crear Reserva',bDs:'Período inicio',bDe:'Período fin',bilanEmpty:'Hacer clic en "Calcular"',agTtl:'🏢 Gestión Agencias',agAdd:'Añadir',agModalSub:'Cuenta staff — no requiere Plan B',prTtl:'💰 Tabla Precios',modalDetail:'Detalles Reserva',errEmpty:'Rellenar todos los campos.',errConn:'Error de conexión.',errPwMatch:'Las contraseñas no coinciden.',errPwShort:'Mínimo 8 caracteres.',okPw:'✅ ¡Contraseña cambiada!',loginTitle:'Acceso Administración',adminId:'Identificador',adminPass:'Contraseña',loginBtn:'Acceder al Dashboard',resetLink:'Cambiar / Recuperar contraseña',r1Title:'🔑 Recuperar Contraseña',r1Sub:'Identificador + email registrado en la hoja PASSWORDS',r1Id:'Identificador',r1Email:'Email registrado',r1Btn:'Enviar Código',back1:'Volver',r2Title:'📧 Verificar Código',r2New:'Nueva contraseña (mín. 8)',r2Btn:'Cambiar',back2:'Nuevo código',pageOf:'de',confirmCancel:'Cancelar esta reserva',navSections:'Secciones',navQuick:'Acciones rápidas',refreshBtn:'Actualizar',sessionExpired:'Sesión expirada.'}
+  FR:{idleLogout:'Session fermée après 8 h sans activité.',adminRole:'Staff Hôtel',newResa:'+ Nouvelle',logout:'⎋ Déconnexion',tabRes:'Réservations',tabCreate:'Nouvelle',tabBilan:'Bilan',tabAg:'Agences',tabPr:'Prix',tabEmail:'Email',tabUpcoming:'Prochains Transferts',upcomingTitle:'Prochains Transferts',upcomingSub:'Transferts futurs non encore réalisés — par ordre chronologique',upcomingEmpty:'Aucun transfert futur en attente.',sUpcoming:'À réaliser',today:"Aujourd'hui",tomorrow:'Demain',sTotal:'Total',sPend:'Pendentes',sConf:'Confirmadas',sCanc:'Canceladas',sReal:'Realizadas',cardTtl:'Toutes les Réservations',fSearch:'Recherche',fStatut:'Statut',fAg:'Agence',fDs:'Date début',fDe:'Date fin',fType:'Type',btnReset:'✕ Effacer',bulkSel:'sélectionnée(s)',bulkEmail:'✉️ Email',bulkConf:'✅ Confirmer',bulkReal:'🏁 Réalisé',bulkPago:'💶 Payé',bulkCanc:'❌ Annuler',bulkDesel:'✕ Désélectionner',createTtl:'➕ Nouvelle Réservation',secClient:'👤 Client',secTransfer:'🚗 Transfer',secGestion:'⚙️ Gestion',crNom:'Nom Complet *',crEmail:'Email *',crTel:'Téléphone *',crPax:'Personnes *',crLang:'Langue de l\'email (25 langues)',btnCreate:'Créer la Réservation',bDs:'Période début',bDe:'Période fin',bilanEmpty:'Cliquez sur « Calculer » pour afficher le bilan',agTtl:'🏢 Gestion des Agences',agAdd:'Ajouter',agModalSub:'Session hôtel — pas de Plan B requis',prTtl:'💰 Tableau des Prix',modalDetail:'Détails de la Réservation',errEmpty:'Remplir tous les champs.',errConn:'Erreur de connexion.',errPwMatch:'Les mots de passe ne correspondent pas.',errPwShort:'Minimum 8 caractères.',okPw:'✅ Mot de passe changé !',loginTitle:'Accès Administration',adminId:'Identifiant Admin',adminPass:'Mot de Passe',loginBtn:'Accéder au Dashboard',resetLink:'Changer / Récupérer mot de passe',r1Title:'🔑 Récupérer Mot de Passe',r1Sub:'Identifiant + email enregistré dans PASSWORDS',r1Id:'Identifiant',r1Email:'Email enregistré',r1Btn:'Envoyer le Code',back1:'Retour',r2Title:'📧 Vérifier Code',r2New:'Nouveau mot de passe (min. 8)',r2Btn:'Changer',back2:'Nouveau code',pageOf:'sur',confirmCancel:'Annuler cette réservation',navSections:'Sections',navQuick:'Actions rapides',refreshBtn:'Actualiser',sessionExpired:'Session expirée.'},
+  PT:{idleLogout:'Sessão encerrada após 8 h sem atividade.',adminRole:'Staff Hotel',newResa:'+ Nova',logout:'⎋ Sair',tabRes:'Reservas',tabCreate:'Nova',tabBilan:'Balanço',tabAg:'Agências',tabPr:'Preços',tabEmail:'Email',tabUpcoming:'Próximas Transferências',upcomingTitle:'Próximas Transferências',upcomingSub:'Transfers futuros não realizados — por ordem cronológica',upcomingEmpty:'Nenhum transfer futuro pendente.',sUpcoming:'A Realizar',today:'Hoje',tomorrow:'Amanhã',sTotal:'Total',sPend:'Pendentes',sConf:'Confirmadas',sCanc:'Canceladas',sReal:'Realizadas',cardTtl:'Todas as Reservas',fSearch:'Pesquisa',fStatut:'Estado',fAg:'Agência',fDs:'Data início',fDe:'Data fim',fType:'Tipo',btnReset:'✕ Limpar',bulkSel:'selecionada(s)',bulkEmail:'✉️ Email',bulkConf:'✅ Confirmar',bulkReal:'🏁 Realizado',bulkPago:'💶 Pago',bulkCanc:'❌ Cancelar',bulkDesel:'✕ Desselecionar',createTtl:'➕ Nova Reserva',secClient:'👤 Cliente',secTransfer:'🚗 Transfer',secGestion:'⚙️ Gestão',crNom:'Nome Completo *',crEmail:'Email *',crTel:'Telemóvel *',crPax:'Pessoas *',crLang:'Idioma do email (25 línguas)',btnCreate:'Criar a Reserva',bDs:'Período início',bDe:'Período fim',bilanEmpty:'Clique em « Calcular » para ver o balanço',agTtl:'🏢 Gestão de Agências',agAdd:'Adicionar',agModalSub:'Conta staff — não requer sessão Plan B',prTtl:'💰 Tabela de Preços',modalDetail:'Detalhes da Reserva',errEmpty:'Preencher todos os campos.',errConn:'Erro de ligação.',errPwMatch:'As palavras-passe não coincidem.',errPwShort:'Mínimo 8 caracteres.',okPw:'✅ Palavra-passe alterada!',loginTitle:'Acesso Administração',adminId:'Identificador',adminPass:'Palavra-passe',loginBtn:'Aceder ao Dashboard',resetLink:'Alterar / Recuperar palavra-passe',r1Title:'🔑 Recuperar Palavra-passe',r1Sub:'Identificador + email registado na feuille PASSWORDS',r1Id:'Identificador',r1Email:'Email registado',r1Btn:'Enviar Código',back1:'Voltar',r2Title:'📧 Verificar Código',r2New:'Nova palavra-passe (min. 8)',r2Btn:'Alterar',back2:'Novo código',pageOf:'de',confirmCancel:'Cancelar esta reserva',navSections:'Secções',navQuick:'Ações rápidas',refreshBtn:'Atualizar',sessionExpired:'Sessão expirada.'},
+  EN:{idleLogout:'Session closed after 8 hours of inactivity.',adminRole:'Hotel Staff',newResa:'+ New',logout:'⎋ Sign out',tabRes:'Reservations',tabCreate:'New',tabBilan:'Report',tabAg:'Agencies',tabPr:'Prices',tabEmail:'Email',tabUpcoming:'Upcoming Transfers',upcomingTitle:'Upcoming Transfers',upcomingSub:'Future transfers not yet completed — in chronological order',upcomingEmpty:'No upcoming pending transfers.',sUpcoming:'Upcoming',today:'Today',tomorrow:'Tomorrow',sTotal:'Total',sPend:'Pending',sConf:'Confirmed',sCanc:'Cancelled',sReal:'Completed',cardTtl:'All Reservations',fSearch:'Search',fStatut:'Status',fAg:'Agency',fDs:'Start date',fDe:'End date',fType:'Type',btnReset:'✕ Clear',bulkSel:'selected',bulkEmail:'✉️ Email',bulkConf:'✅ Confirm',bulkReal:'🏁 Completed',bulkPago:'💶 Paid',bulkCanc:'❌ Cancel',bulkDesel:'✕ Deselect',createTtl:'➕ New Reservation',secClient:'👤 Client',secTransfer:'🚗 Transfer',secGestion:'⚙️ Management',crNom:'Full Name *',crEmail:'Email *',crTel:'Phone *',crPax:'Passengers *',crLang:'Email language (25 languages)',btnCreate:'Create Reservation',bDs:'Period start',bDe:'Period end',bilanEmpty:'Click "Calculate"',agTtl:'🏢 Agency Management',agAdd:'Add',agModalSub:'Staff login — no Plan B session needed',prTtl:'💰 Price Table',modalDetail:'Reservation Details',errEmpty:'Fill in all fields.',errConn:'Connection error.',errPwMatch:'Passwords do not match.',errPwShort:'Minimum 8 characters.',okPw:'✅ Password changed!',loginTitle:'Admin Access',adminId:'Admin ID',adminPass:'Password',loginBtn:'Access Dashboard',resetLink:'Change / Recover password',r1Title:'🔑 Recover Password',r1Sub:'ID + email registered in PASSWORDS sheet',r1Id:'Admin ID',r1Email:'Registered email',r1Btn:'Send Code',back1:'Back',r2Title:'📧 Verify Code',r2New:'New password (min. 8)',r2Btn:'Change',back2:'New code',pageOf:'of',confirmCancel:'Cancel this reservation',navSections:'Sections',navQuick:'Quick actions',refreshBtn:'Refresh',sessionExpired:'Session expired.'},
+  ES:{idleLogout:'Sesión cerrada tras 8 h sin actividad.',adminRole:'Staff Hotel',newResa:'+ Nueva',logout:'⎋ Salir',tabRes:'Reservas',tabCreate:'Nueva',tabBilan:'Balance',tabAg:'Agencias',tabPr:'Precios',tabEmail:'Email',tabUpcoming:'Próximas Transferencias',upcomingTitle:'Próximas Transferencias',upcomingSub:'Transferencias futuras no realizadas — en orden cronológico',upcomingEmpty:'No hay transferencias futuras pendientes.',sUpcoming:'A Realizar',today:'Hoy',tomorrow:'Mañana',sTotal:'Total',sPend:'Pendientes',sConf:'Confirmadas',sCanc:'Canceladas',sReal:'Realizadas',cardTtl:'Todas las Reservas',fSearch:'Búsqueda',fStatut:'Estado',fAg:'Agencia',fDs:'Fecha inicio',fDe:'Fecha fin',fType:'Tipo',btnReset:'✕ Borrar',bulkSel:'seleccionada(s)',bulkEmail:'✉️ Email',bulkConf:'✅ Confirmar',bulkReal:'🏁 Realizado',bulkPago:'💶 Pagado',bulkCanc:'❌ Cancelar',bulkDesel:'✕ Deseleccionar',createTtl:'➕ Nueva Reserva',secClient:'👤 Cliente',secTransfer:'🚗 Traslado',secGestion:'⚙️ Gestión',crNom:'Nombre Completo *',crEmail:'Email *',crTel:'Teléfono *',crPax:'Personas *',crLang:'Idioma del correo (25 idiomas)',btnCreate:'Crear Reserva',bDs:'Período inicio',bDe:'Período fin',bilanEmpty:'Hacer clic en "Calcular"',agTtl:'🏢 Gestión Agencias',agAdd:'Añadir',agModalSub:'Cuenta staff — no requiere Plan B',prTtl:'💰 Tabla Precios',modalDetail:'Detalles Reserva',errEmpty:'Rellenar todos los campos.',errConn:'Error de conexión.',errPwMatch:'Las contraseñas no coinciden.',errPwShort:'Mínimo 8 caracteres.',okPw:'✅ ¡Contraseña cambiada!',loginTitle:'Acceso Administración',adminId:'Identificador',adminPass:'Contraseña',loginBtn:'Acceder al Dashboard',resetLink:'Cambiar / Recuperar contraseña',r1Title:'🔑 Recuperar Contraseña',r1Sub:'Identificador + email registrado en la hoja PASSWORDS',r1Id:'Identificador',r1Email:'Email registrado',r1Btn:'Enviar Código',back1:'Volver',r2Title:'📧 Verificar Código',r2New:'Nueva contraseña (mín. 8)',r2Btn:'Cambiar',back2:'Nuevo código',pageOf:'de',confirmCancel:'Cancelar esta reserva',navSections:'Secciones',navQuick:'Acciones rápidas',refreshBtn:'Actualizar',sessionExpired:'Sesión expirada.'}
 };
 
 /* En-têtes & libellés tableaux / formulaires (fusionné dans t()) */
@@ -2465,8 +2476,8 @@ const S={
   curTab:'reservas'
 };
 
-/* Session : le rafraîchissement de la page ne déconnecte pas ; déconnexion automatique après 3 h sans activité (bouton Déconnexion inchangé). */
-const HOTEL_SESSION_IDLE_MS = 3 * 60 * 60 * 1000;
+/* Session : refresh ne déconnecte pas ; idle long sans activité ; bouton Sair = déconnexion manuelle. Multi-appareils OK côté serveur. */
+const HOTEL_SESSION_IDLE_MS = 8 * 60 * 60 * 1000;
 const HOTEL_TOK_KEY_SS = 'nlp_hotel_tok';
 const HOTEL_TOK_KEY_LS = 'nlp_hotel_tok_mirror';
 const HOTEL_ACT_KEY = 'nlp_hotel_last_activity';
@@ -2730,6 +2741,7 @@ async function api(payload, opts){
     if(!r.ok)throw new Error('HTTP '+r.status+' '+r.statusText);
     const d=await r.json();
     dbg(d.success?'ok':'warn',(d.success?'✅':'⚠️')+' '+JSON.stringify(d).slice(0,120));
+    if(d&&d.success&&S.token) bumpHotelActivity();
     return d;
   }catch(err){
     dbg('err','❌ '+err.name+': '+err.message);
@@ -5165,6 +5177,13 @@ function highlightEmailFolders(folder){
   document.querySelectorAll('#email-folder-tabs [data-folder], #email-cat-tabs [data-folder]').forEach(el=>{
     el.classList.toggle('active', el.getAttribute('data-folder')===folder);
   });
+  const labels={
+    inbox:'Entrada', starred:'Estrela', snoozed:'Suspenso', important:'Importante',
+    sent:'Enviado', scheduled:'Agendado', drafts:'Rascunhos', spam:'Spam', trash:'Lixo', all:'Todos',
+    primary:'Principal', promotions:'Promoções', social:'Social', updates:'Atualizações', forums:'Fóruns'
+  };
+  const cur=document.getElementById('em-current-folder');
+  if(cur)cur.textContent=labels[folder]||folder||'Entrada';
 }
 
 function switchEmailFolder(folder){
@@ -5300,21 +5319,58 @@ function fillEmailTabResaSelect(){
   const sel=document.getElementById('em-tab-resa');
   if(!sel)return;
   const prev=sel.value;
+  const q=(document.getElementById('em-tab-resa-q')?.value||'').trim().toLowerCase();
+  const tokens=q?q.split(/\s+/).filter(Boolean):[];
   const list=(S.reservas||[]).slice().sort((a,b)=>String(b.dateTransfer||'').localeCompare(String(a.dateTransfer||'')));
+  const agName=id=>{
+    if(!id)return '';
+    const a=(S.agencias||[]).find(x=>x.id===id);
+    return a?(a.nom||a.id||''):String(id);
+  };
+  const hay=r=>{
+    const tel=r.telephone||r.clientTel||r.tel||'';
+    return [
+      r.id, r.numReservaOta, r.clientNom, r.clientEmail, tel,
+      r.dateTransfer, r.heureTransfer, r.pointDepart, r.destination,
+      r.statut, r.statutPaiement, r.agencyId, agName(r.agencyId),
+      r.numVol, r.numTransport, r.adresseDepart, r.adresseDestination
+    ].map(x=>String(x==null?'':x).toLowerCase()).join(' ');
+  };
+  const filtered=tokens.length
+    ? list.filter(r=>{
+        const h=hay(r);
+        return tokens.every(t=>h.indexOf(t)>=0);
+      })
+    : list;
   sel.innerHTML='';
   const opt0=document.createElement('option');
   opt0.value='';
-  opt0.textContent='—';
+  opt0.textContent=filtered.length?'— Selecionar reserva —':'— Nenhuma reserva —';
   sel.appendChild(opt0);
-  list.forEach(r=>{
+  const maxShow=Math.min(filtered.length,200);
+  for(var i=0;i<maxShow;i++){
+    const r=filtered[i];
     const opt=document.createElement('option');
     opt.value=r.id;
-    opt.textContent=`${r.id} · ${r.clientNom||'—'} · ${r.clientEmail||'sem email'}`;
+    const mail=r.clientEmail||'sem email';
+    const tel=r.telephone||r.clientTel||'';
+    opt.textContent=`${r.id} · ${r.clientNom||'—'} · ${mail}${tel?' · '+tel:''} · ${fmtD?fmtD(r.dateTransfer):(r.dateTransfer||'—')} · ${r.statut||''}`;
     sel.appendChild(opt);
-  });
+  }
   if(prev&&[...sel.options].some(o=>o.value===prev))sel.value=prev;
+  else if(filtered.length===1)sel.value=filtered[0].id;
   sel.onchange=updateEmailTabClientInfo;
+  const cnt=document.getElementById('em-tab-resa-count');
+  if(cnt){
+    cnt.textContent=tokens.length
+      ? `${filtered.length} resultado(s)`+(filtered.length>200?' (mostrando 200)':'')
+      : `${list.length} reserva(s) · use a pesquisa para filtrar`;
+  }
   updateEmailTabClientInfo();
+}
+
+function filterEmailTabResas(){
+  fillEmailTabResaSelect();
 }
 
 function updateEmailTabClientInfo(){
@@ -5324,7 +5380,15 @@ function updateEmailTabClientInfo(){
   if(!id){box.textContent='—';return;}
   const r=(S.reservas||[]).find(x=>x.id===id);
   if(!r){box.textContent='—';return;}
-  box.innerHTML=`<strong>${r.clientNom||'—'}</strong> · ${r.clientEmail||'<em>sem email</em>'} · ${fmtD?fmtD(r.dateTransfer):(r.dateTransfer||'—')} · ${r.statut||''}`;
+  const tel=r.telephone||r.clientTel||'—';
+  const ag=(S.agencias||[]).find(a=>a.id===r.agencyId);
+  box.innerHTML=
+    `<strong>${escEm(r.clientNom||'—')}</strong><br>`+
+    `Email: ${r.clientEmail?escEm(r.clientEmail):'<em>sem email</em>'} · Tel: ${escEm(tel)}<br>`+
+    `Reserva: <span class="mono">${escEm(r.id)}</span>`+(r.numReservaOta?' · OTA '+escEm(r.numReservaOta):'')+`<br>`+
+    `${fmtD?fmtD(r.dateTransfer):(r.dateTransfer||'—')} ${fmtH?fmtH(r.heureTransfer):(r.heureTransfer||'')} · ${escEm(r.statut||'')}`+
+    (ag?` · Agência: ${escEm(ag.nom||ag.id)}`:'')+
+    `<br>${escEm(r.pointDepart||'—')} → ${escEm(r.destination||'—')}`;
 }
 
 async function loadEmailTab(){
@@ -5783,21 +5847,44 @@ async function loadEmailTemplatesTab(){
       wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${(d&&d.error)||'Erro ao carregar modelos'}</p>`;
       return;
     }
-    const tpls=d.templates||[];
-    if(!tpls.length){
-      wrap.innerHTML='<p style="padding:16px;color:var(--ts)">Nenhum modelo na folha EMAIL_TEMPLATES.</p>';
-      return;
-    }
-    let html='<table><thead><tr><th>Lang</th><th>Sujet</th><th>HTML (extrait)</th></tr></thead><tbody>';
-    tpls.forEach(t=>{
-      const preview=String(t.messageHtml||'').replace(/<[^>]+>/g,' ').slice(0,120);
-      html+=`<tr><td class="mono">${(t.lang||'').replace(/</g,'&lt;')}</td><td>${(t.sujet||'').replace(/</g,'&lt;')}</td><td style="font-size:11px;color:var(--ts)">${preview.replace(/</g,'&lt;')}…</td></tr>`;
-    });
-    html+='</tbody></table>';
-    wrap.innerHTML=html;
+    S.emailTemplatesCache=d.templates||[];
+    renderEmailTemplatesTab();
   }catch(err){
     wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${err.message||err}</p>`;
   }
+}
+
+function filterEmailTemplatesTab(){ renderEmailTemplatesTab(); }
+
+function renderEmailTemplatesTab(){
+  const wrap=document.getElementById('em-tpl-wrap');
+  if(!wrap)return;
+  const q=(document.getElementById('em-tpl-q')?.value||'').trim().toLowerCase();
+  const tpls=S.emailTemplatesCache||[];
+  if(!tpls.length){
+    wrap.innerHTML='<p style="padding:16px;color:var(--ts)">Nenhum modelo na folha EMAIL_TEMPLATES.</p>';
+    return;
+  }
+  const filtered=q?tpls.filter(t=>{
+    const h=((t.lang||'')+' '+(t.sujet||'')+' '+String(t.messageHtml||'').replace(/<[^>]+>/g,' ')).toLowerCase();
+    return h.indexOf(q)>=0;
+  }):tpls;
+  if(!filtered.length){
+    wrap.innerHTML='<p style="padding:16px;color:var(--ts)">Nenhum modelo corresponde à pesquisa.</p>';
+    return;
+  }
+  let html='<table><thead><tr><th>Idioma</th><th>Assunto</th><th>Pré-visualização</th></tr></thead><tbody>';
+  filtered.forEach(t=>{
+    const preview=String(t.messageHtml||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,160);
+    html+=`<tr>
+      <td class="mono" style="white-space:nowrap">${escEm(t.lang||'')}</td>
+      <td style="font-weight:600">${escEm(t.sujet||'(sem assunto)')}</td>
+      <td style="font-size:11px;color:var(--ts);line-height:1.4">${escEm(preview)}${preview.length>=160?'…':''}</td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  html+=`<p class="em-tpl-hint" style="padding:10px 0 0">Mostrando ${filtered.length} / ${tpls.length} modelo(s). Edição dos modelos: Plan B / folha EMAIL_TEMPLATES.</p>`;
+  wrap.innerHTML=html;
 }
 
 function showInlineError(msg,type='err'){
