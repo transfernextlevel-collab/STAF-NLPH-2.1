@@ -666,6 +666,12 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
   .toast{left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));max-width:none}
 }
 </style>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon.ico" type="image/x-icon" sizes="32x32">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="NLPH Staff 2.1">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body>
 
@@ -5340,13 +5346,7 @@ async function openEmailMailboxMessage(messageId){
       const raw=String(m.bodyHtml||'');
       ifr.srcdoc=raw.indexOf('<html')>=0||raw.indexOf('<HTML')>=0
         ? raw.replace(/<head([^>]*)>/i,'<head$1><meta name="viewport" content="width=device-width,initial-scale=1">'+wrapCss)
-        : '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+wrapCss+'<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="favicon.ico" type="image/x-icon" sizes="32x32">
-<link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="NLPH Staff 2.1">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-</head><body>'+raw+'</body></html>';
+        : '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+wrapCss+'</head><body>'+raw+'</body></html>';
       const fitIframe=function(){
         try{
           const doc=ifr.contentDocument||ifr.contentWindow.document;
