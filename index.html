@@ -1106,7 +1106,7 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
   <div class="section" id="section-email">
     <div class="card fadein em-card">
       <div class="card-hdr">
-        <div class="card-ttl" id="lbl-email-ttl">✉️ Email</div>
+        <div class="card-ttl" id="lbl-email-section-ttl">✉️ Email</div>
         <div class="hdr-acts em-hdr-acts">
           <button class="btn btn-navy btn-sm" type="button" onclick="switchEmailPanel('compose')" id="btn-email-compose">✏️ Compor</button>
           <button class="btn btn-ghost btn-sm" type="button" onclick="loadEmailTab()" id="btn-email-refresh">↻</button>
@@ -1134,41 +1134,41 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
           </div>
           <div id="em-mbox-grid" class="em-mbox-grid" data-view="list">
             <nav id="email-folder-tabs" class="em-folder-nav" aria-label="Dossiers email">
-              <div class="em-nav-label">Classement</div>
-              <button type="button" class="email-tab em-folder-btn active" data-folder="inbox" onclick="switchEmailFolder('inbox')">📥 Entrada</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="starred" onclick="switchEmailFolder('starred')">⭐ Estrela</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="snoozed" onclick="switchEmailFolder('snoozed')">💤 Suspenso</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="important" onclick="switchEmailFolder('important')">❗ Importante</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="sent" onclick="switchEmailFolder('sent')">📤 Enviado</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="scheduled" onclick="switchEmailFolder('scheduled')">🗓️ Agendado</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="drafts" onclick="switchEmailFolder('drafts')">📝 Rascunhos</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="spam" onclick="switchEmailFolder('spam')">🚫 Spam</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="trash" onclick="switchEmailFolder('trash')">🗑️ Lixo</button>
-              <button type="button" class="email-tab em-folder-btn" data-folder="all" onclick="switchEmailFolder('all')">📚 Todos</button>
+              <div class="em-nav-label" id="em-lbl-folders">Classement</div>
+              <button type="button" class="email-tab em-folder-btn active" data-folder="inbox" onclick="switchEmailFolder('inbox')" id="em-f-inbox">📥 Entrada</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="starred" onclick="switchEmailFolder('starred')" id="em-f-starred">⭐ Estrela</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="snoozed" onclick="switchEmailFolder('snoozed')" id="em-f-snoozed">💤 Suspenso</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="important" onclick="switchEmailFolder('important')" id="em-f-important">❗ Importante</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="sent" onclick="switchEmailFolder('sent')" id="em-f-sent">📤 Enviado</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="scheduled" onclick="switchEmailFolder('scheduled')" id="em-f-scheduled">🗓️ Agendado</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="drafts" onclick="switchEmailFolder('drafts')" id="em-f-drafts">📝 Rascunhos</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="spam" onclick="switchEmailFolder('spam')" id="em-f-spam">🚫 Spam</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="trash" onclick="switchEmailFolder('trash')" id="em-f-trash">🗑️ Lixo</button>
+              <button type="button" class="email-tab em-folder-btn" data-folder="all" onclick="switchEmailFolder('all')" id="em-f-all">📚 Todos</button>
             </nav>
             <div class="em-list-col">
               <div class="email-tabs em-cat-tabs" id="email-cat-tabs">
-                <div class="em-nav-label em-nav-label-inline">Catégories</div>
-                <div class="email-tab" data-folder="primary" onclick="switchEmailFolder('primary')">Principal</div>
-                <div class="email-tab" data-folder="promotions" onclick="switchEmailFolder('promotions')">Promoções</div>
-                <div class="email-tab" data-folder="social" onclick="switchEmailFolder('social')">Social</div>
-                <div class="email-tab" data-folder="updates" onclick="switchEmailFolder('updates')">Atualizações</div>
-                <div class="email-tab" data-folder="forums" onclick="switchEmailFolder('forums')">Fóruns</div>
+                <div class="em-nav-label em-nav-label-inline" id="em-lbl-cats">Catégories</div>
+                <div class="email-tab" data-folder="primary" onclick="switchEmailFolder('primary')" id="em-c-primary">Principal</div>
+                <div class="email-tab" data-folder="promotions" onclick="switchEmailFolder('promotions')" id="em-c-promotions">Promoções</div>
+                <div class="email-tab" data-folder="social" onclick="switchEmailFolder('social')" id="em-c-social">Social</div>
+                <div class="email-tab" data-folder="updates" onclick="switchEmailFolder('updates')" id="em-c-updates">Atualizações</div>
+                <div class="email-tab" data-folder="forums" onclick="switchEmailFolder('forums')" id="em-c-forums">Fóruns</div>
               </div>
               <div class="tbl-wrap em-list-wrap" id="em-mbox-list"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
             </div>
             <div id="em-mbox-detail" class="em-detail">
-              <button type="button" class="btn btn-ghost btn-sm em-back-list" onclick="emailBackToList()">← Lista</button>
+              <button type="button" class="btn btn-ghost btn-sm em-back-list" onclick="emailBackToList()" id="em-btn-back">← Lista</button>
               <p class="em-detail-empty" id="em-mbox-detail-empty">Sélectionnez un message.</p>
               <div id="em-mbox-detail-body" class="em-detail-body" style="display:none">
                 <div class="em-detail-actions" id="em-mbox-actions">
-                  <button type="button" class="btn btn-ghost btn-sm" onclick="replyEmailMailboxMessage()">↩ Répondre</button>
-                  <button type="button" class="btn btn-ghost btn-sm" onclick="replyAllEmailMailboxMessage()">↩↩ Tous</button>
-                  <button type="button" class="btn btn-ghost btn-sm" onclick="forwardEmailMailboxMessage()">↪ Transférer</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="replyEmailMailboxMessage()" id="em-act-reply">↩ Répondre</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="replyAllEmailMailboxMessage()" id="em-act-replyall">↩↩ Tous</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="forwardEmailMailboxMessage()" id="em-act-fwd">↪ Transférer</button>
                   <button type="button" class="btn btn-ghost btn-sm" id="em-act-star" onclick="emailMsgAction('star')">⭐ Étoile</button>
                   <button type="button" class="btn btn-ghost btn-sm" id="em-act-unread" onclick="emailMsgAction('markUnread')">● Non lu</button>
-                  <button type="button" class="btn btn-ghost btn-sm" onclick="emailMsgAction('archive')">⬇ Arquivar</button>
-                  <button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="emailMsgAction('trash')">🗑️ Eliminar</button>
+                  <button type="button" class="btn btn-ghost btn-sm" onclick="emailMsgAction('archive')" id="em-act-archive">⬇ Arquivar</button>
+                  <button type="button" class="btn btn-ghost btn-sm" style="color:var(--danger)" onclick="emailMsgAction('trash')" id="em-act-trash">🗑️ Eliminar</button>
                 </div>
                 <div class="em-detail-meta" id="em-mbox-meta"></div>
                 <div class="em-detail-subject" id="em-mbox-subject"></div>
@@ -1184,15 +1184,15 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
 
         <div id="email-panel-compose" class="em-panel-compose" style="display:none">
           <div class="em-comp-fields">
-            <div class="f-group"><label>Para (To) *</label><input type="email" id="em-comp-to" class="em-field" placeholder="destinatario@email.com" autocomplete="email"></div>
+            <div class="f-group"><label id="em-lbl-to">Para (To) *</label><input type="email" id="em-comp-to" class="em-field" placeholder="destinatario@email.com" autocomplete="email"></div>
             <div class="em-comp-ccbcc-toggle">
-              <button type="button" class="btn btn-ghost btn-sm" onclick="toggleComposeCcBcc()">+ Cc / Bcc</button>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="toggleComposeCcBcc()" id="em-btn-ccbcc">+ Cc / Bcc</button>
             </div>
-            <div id="em-comp-cc-wrap" class="f-group" style="display:none"><label>Cc</label><input type="text" id="em-comp-cc" class="em-field" placeholder="copie@email.com"></div>
-            <div id="em-comp-bcc-wrap" class="f-group" style="display:none"><label>Bcc</label><input type="text" id="em-comp-bcc" class="em-field" placeholder="copie cachée"></div>
-            <div class="f-group"><label>Assunto *</label><input type="text" id="em-comp-subject" class="em-field"></div>
+            <div id="em-comp-cc-wrap" class="f-group" style="display:none"><label id="em-lbl-cc">Cc</label><input type="text" id="em-comp-cc" class="em-field" placeholder="copie@email.com"></div>
+            <div id="em-comp-bcc-wrap" class="f-group" style="display:none"><label id="em-lbl-bcc">Bcc</label><input type="text" id="em-comp-bcc" class="em-field" placeholder="copie cachée"></div>
+            <div class="f-group"><label id="em-lbl-subject">Assunto *</label><input type="text" id="em-comp-subject" class="em-field"></div>
             <div class="f-group">
-              <label>Mensagem *</label>
+              <label id="em-lbl-body">Mensagem *</label>
               <div class="em-fmt-bar" role="toolbar" aria-label="Formatage">
                 <button type="button" class="em-fmt-btn" title="Gras" onclick="emFmt('bold')"><b>B</b></button>
                 <button type="button" class="em-fmt-btn" title="Italique" onclick="emFmt('italic')"><i>I</i></button>
@@ -1209,17 +1209,17 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
           <input type="hidden" id="em-comp-reply-id" value="">
           <input type="hidden" id="em-comp-mode" value="new">
           <div class="em-compose-acts">
-            <button type="button" class="btn btn-navy" onclick="sendEmailCompose()">✉️ Enviar</button>
-            <button type="button" class="btn btn-ghost" onclick="clearEmailCompose()">Limpar</button>
+            <button type="button" class="btn btn-navy" onclick="sendEmailCompose()" id="em-btn-send-comp">✉️ Enviar</button>
+            <button type="button" class="btn btn-ghost" onclick="clearEmailCompose()" id="em-btn-clear-comp">Limpar</button>
           </div>
           <div class="modal-msg" id="em-comp-msg"></div>
         </div>
 
         <div id="email-panel-send" style="display:none">
           <div class="f-group">
-            <label>Pesquisar reserva</label>
+            <label id="em-lbl-resa-search">Pesquisar reserva</label>
             <input type="search" id="em-tab-resa-q" class="em-field" placeholder="ID, nome, email, telefone, data, agência, estado…" enterkeyhint="search" oninput="filterEmailTabResas()" autocomplete="off">
-            <p class="em-tpl-hint" style="margin-top:6px">Pesquisa por nº reserva, nome, email, telemóvel, data, percurso, agência, estado — qualquer combinação.</p>
+            <p class="em-tpl-hint" id="em-lbl-resa-search-hint" style="margin-top:6px">Pesquisa por nº reserva, nome, email, telemóvel, data, percurso, agência, estado — qualquer combinação.</p>
           </div>
           <div class="f-group">
             <label id="lbl-em-resa">Reserva</label>
@@ -2461,6 +2461,171 @@ const LBL_EXT={
   ES:{sPend:'Pendientes',sConf:'Confirmadas',sCanc:'Canceladas',sReal:'Realizadas',thRef:'Ref.',thClient:'Cliente',thDate:'Fecha',thTime:'Hora',thRoute:'Trayecto',thPax:'Pax',thAgency:'Agencia',thPrice:'Precio',thStatus:'Estado',thPayment:'Pago',thActions:'Acciones',emptyFiltered:'Ninguna reserva coincide con estos filtros.',prThFrom:'De',prThTo:'A',prThVehicle:'Vehículo',prThPaxMin:'Pax mín',prThPaxMax:'Pax máx',prThPrice:'Precio (€)',prEmpty:'Ningún precio configurado',loadingTxt:'Cargando…',fAll:'Todos',fStatPend:'⏳ Pendiente',fStatConf:'✅ Confirmada',fStatCanc:'❌ Cancelada',fStatReal:'🏁 Realizada',fTypeAll:'Todos',fTypeAirport:'✈️ Aeropuerto → hotel',fTypeHotel:'🏨 Hotel → aeropuerto',fTypeTrain:'🚂 Tren',fTypeBus:'🚌 Autobús',fTypeHighspeed:'🚄 Alta velocidad',bilanEmptySub:'Elija un período y filtros y pulse « Calcular ».',fSearchPh:'ID, cliente, correo…',crOta:'N° OTA',crOtaHint:'Booking.com o Expedia',crBags:'Equipaje',crOrigType:'Tipo de traslado',crDepart:'Salida',crDest:'Destino',crAddrDep:'Dirección salida',crAddrDest:'Dirección destino',crOpt:'(opc.)',crDate:'Fecha',crHour:'Hora (24 h)',crVol:'N° vuelo',crTransport:'N° transporte',crHintTransport:'Tren, autobús o ferry',crRoom:'N° habitación',crStatutLab:'Estado inicial',crAgency:'Agencia',crPrixLab:'Precio final (€)',crPayLab:'Pago',crComLab:'Comentarios',crComPh:'Información adicional…',payNon:'No pagado',payOui:'Pagado',agNonAttrib:'— Sin agencia —',crStatPend:'⏳ Pendiente',crStatConf:'✅ Confirmada',hdrClear:'Vaciar',lblAgInfo:'🔐 Modificación permitida con la contraseña admin. Pulse ✏️ para editar una agencia.',lblPrHint:'Para cambiar precios: use el admin Plan B o el menú Google Sheets → ERP Transfers.',paidYes:'Pagado',prixAutoOk:'✓ Precio sugerido: ',prixAutoNone:'Ningún precio automático para este trayecto.',bAgency:'Agencia',bStat:'Estado',bType:'Tipo de traslado',btnCalc:'📊 Calcular',btnSave:'💾 Guardar',expCsv:'⬇ CSV',expXls:'⬇ Excel',expPdf:'⬇ PDF / 🖨️',emailSub:'Elija idioma — Transfer IN/OUT detectado automáticamente',emailModalTtl:'✉️ Email de confirmación multilingüe',emailLangLbl:'Idioma del correo',emailLangHint:'Desplegable: el idioma elegido actualiza la vista previa del cuerpo abajo (igual al envío).',emailAirportStrong:'Transfer IN detectado',emailAirportDesc:'El punto de encuentro en el aeropuerto se incluirá en el correo enviado al cliente.',emDirIn:'📥 Transfer IN (desde aeropuerto): {n} reserva(s)\n   → Correo de bienvenida + nota de encuentro en aeropuerto',emDirOut:'📤 Transfer OUT (salida hotel): {n} reserva(s)\n   → Correo de buen viaje',emDirOther:'🚂 Otro tipo: {n} reserva(s)',emailPayTtl:'Forma de pago — correo al cliente',emailPayIncl:'Incluir la forma de pago en el correo al cliente (fila en la tabla de detalles — opcional, igual al envío)',emailPayModeLbl:'Modo',emailPayOff:'—',emailPaySheet:'Ficha agencia (método registrado)',emailPayDriver:'Efectivo al conductor',emailPayReception:'Efectivo en recepción del hotel',emailPayCustom:'Texto personalizado',emailPayCustomPh:'Texto libre (se muestra tal cual)',emailPreviewTtl:'Vista previa del correo',emailPreviewHdr:'📧 Next Level Premium Hotels — Transfer Service',emailBtnClose:'Cerrar',emailBtnPreview:'👁 Vista previa',emailBtnSend:'✉️ Enviar correo(s)',emailThDetail:'Detalle',emailThInfo:'Información',previewToast:'Vista previa actualizada',emNoResa:'Ninguna reserva',emSendResult:'✅ {ok} correo(s) enviado(s){err}',emSendErrPart:' · ❌ {n} error(es)',emSendToast:'✉️ {ok}/{total} correos enviados',bulkEmailNeedSel:'Seleccione al menos una reserva',staffLockPast:'El día del traslado es hoy o ya pasó: no se puede editar, cancelar ni cambiar agencia.',staffRealFuture:'« Realizado » solo desde el día del traslado.',staffCopyNewOk:'Formulario rellenado — indique nueva fecha y hora.',staffAddComment:'Añadir comentario',staffBtnEdit:'Editar',staffCommentPrevLbl:'Comentarios existentes (no editables)',staffCommentNone:'Ningún comentario existente.',staffCommentAddPh:'Nuevo comentario solamente…',staffCommentNeed:'Escriba un comentario a añadir.',staffCommentSaved:'Comentario añadido.',fAgFilterAll:'Todas',expPrint:'🖨️ Imprimir',expPdfOnly:'⬇ PDF',bilanHelpTitle:'Cómo leer este balance',bilanHelpText:'1) Período, tipo de balance (resumen o detalle por cliente) y filtros. 2) Calcular. 3) Exportar Excel, PDF o Imprimir. Resumen = agregados ; Detalle = una fila por cliente (nombre, precio, destino, importe pagado).',bilanExportHint:'Exportaciones disponibles tras calcular:',bilanReportTitle:'Balance de transfers — Next Level Premium Hotels',bilanPeriod:'Período',bilanFilters:'Filtros aplicados',bilanGenerated:'Generado el',bilanAllPeriod:'Todo el período',bilanLegendTitle:'Leyenda de indicadores',bilanLegCA:'Facturación',bilanLegCADesc:'Total de reservas confirmadas y realizadas (€).',bilanLegPaid:'Cobrado',bilanLegPaidDesc:'Importe ya pagado por clientes.',bilanLegLost:'Perdido (cancelado)',bilanLegLostDesc:'Valor de reservas canceladas en el período.',bilanLegAvg:'Precio medio',bilanLegAvgDesc:'Precio medio por reserva contabilizada.',bilanSecSummary:'Resumen general',bilanSecFinance:'Finanzas',bilanSecStatus:'Por estado',bilanSecMonth:'Por mes',bilanSecAgency:'Por agencia',bilanSecDest:'Top destinos',bilanSecType:'Por tipo de traslado',bilanThIndicator:'Indicador',bilanThValue:'Valor',bilanThExplanation:'Explicación',bilanThMonth:'Mes',bilanThRes:'Reservas',bilanThReal:'Realizadas',bilanThAgency:'Agencia',bilanThShare:'Parte del CA',bilanThDest:'Destino',bilanThType:'Tipo',bilanNeedCalc:'Calcule el balance primero',bilanModeLab:'Tipo de balance',bilanModeSynth:'📊 Resumen (agregados)',bilanModeDetail:'📋 Detalle por cliente',bilanSecDetail:'Lista de reservas',bilanDetailHint:'Una fila por reserva: cliente, precio, destino e importe pagado.',bilanThPaidAmt:'Importe pagado',bilanPdfHint:'Use « Guardar como PDF » en el diálogo de impresión.',workBgTitle:'Color de fondo',workBgHint:'Confort visual durante la sesión. Se restablece al cerrar sesión.',workBgReset:'Predeterminado',agEmailNotifLab:'Email al asignar',agEmailNotifSim:'Sí — notificar por email',agEmailNotifNao:'No — sin email automático',asEmailNotifLab:'Notificar agencia por email',asEmailNotifHint:'Email automático tras asignación (según parámetro de agencia). Desmarque para no enviar.'}
 };
 
+/* Libellés boîte Email 2.1 — 4 langues app (PT/EN/FR/ES) */
+const EMAIL_MBOX_I18N={
+  PT:{
+    sectionTtl:'✉️ Email', hint:'Caixa Gmail — pastas, categorias, leitura e composição.',
+    tabMailbox:'Caixa', tabCompose:'Compor', tabConfirm:'Confirmação', tabTpl:'Modelos',
+    composeBtn:'✏️ Compor', refreshBtn:'↻', navToggle:'📁 Pastas e categorias', navToggleHide:'📁 Ocultar pastas',
+    foldersLbl:'Classificação', catsLbl:'Categorias',
+    fInbox:'📥 Entrada', fStarred:'⭐ Estrela', fSnoozed:'💤 Suspenso', fImportant:'❗ Importante',
+    fSent:'📤 Enviado', fScheduled:'🗓️ Agendado', fDrafts:'📝 Rascunhos', fSpam:'🚫 Spam', fTrash:'🗑️ Lixo', fAll:'📚 Todos',
+    cPrimary:'Principal', cPromo:'Promoções', cSocial:'Social', cUpdates:'Atualizações', cForums:'Fóruns',
+    curInbox:'Entrada', curStarred:'Estrela', curSnoozed:'Suspenso', curImportant:'Importante',
+    curSent:'Enviado', curScheduled:'Agendado', curDrafts:'Rascunhos', curSpam:'Spam', curTrash:'Lixo', curAll:'Todos',
+    backList:'← Lista', emptyDetail:'Selecione uma mensagem.', loading:'A carregar…', noSubject:'(sem assunto)',
+    actReply:'↩ Responder', actReplyAll:'↩↩ Todos', actFwd:'↪ Reencaminhar', actStar:'⭐ Estrela', actUnstar:'☆ Remover estrela',
+    actUnread:'● Não lida', actRead:'○ Marcar lida', actArchive:'⬇ Arquivar', actTrash:'🗑️ Eliminar',
+    statusRead:'Lida', statusUnread:'Não lida',
+    hdrFrom:'De', hdrTo:'Para', hdrCc:'Cc', hdrBcc:'Bcc', hdrReplyTo:'Reply-To', hdrDate:'Data',
+    to:'Para *', cc:'Cc', bcc:'Bcc', subject:'Assunto *', body:'Mensagem *', ccBcc:'+ Cc / Bcc',
+    sendComp:'✉️ Enviar', clearComp:'Limpar',
+    searchResa:'Pesquisar reserva', searchResaHint:'Pesquisa por nº, nome, email, telemóvel, data, percurso, agência, estado.',
+    searchResaPh:'ID, nome, email, telefone, data, agência, estado…',
+    resaLbl:'Reserva', langLbl:'Idioma do email', sendConfirm:'✉️ Enviar email (API)',
+    tplHint:'Modelos da folha EMAIL_TEMPLATES (leitura). Usados na confirmação.',
+    tplPh:'Filtrar modelos (idioma, assunto…)',
+    errActionUnknown:'Ação Gmail não deployada. No Apps Script: colar ERP TRANSFERS.gs.txt → Deploy → Nova versão. O ping deve mostrar v6.3-gmail.',
+    trashConfirm:'Eliminar este email (mover para o lixo)?',
+    needOpen:'Abra uma mensagem primeiro', okTrash:'Eliminado', okArchive:'Arquivado', okGeneric:'OK',
+    selectResa:'— Selecionar reserva —', noResa:'— Nenhuma reserva —',
+    searchMailPh:'Pesquisar correio…',
+    resaCount:'{n} reserva(s) · use a pesquisa para filtrar', resultCount:'{n} resultado(s)', showing200:' (a mostrar 200)', noEmail:'sem email'
+  },
+  FR:{
+    sectionTtl:'✉️ Email', hint:'Boîte Gmail — dossiers, catégories, lecture et composition.',
+    tabMailbox:'Boîte', tabCompose:'Composer', tabConfirm:'Confirmation', tabTpl:'Modèles',
+    composeBtn:'✏️ Composer', refreshBtn:'↻', navToggle:'📁 Dossiers et catégories', navToggleHide:'📁 Masquer dossiers',
+    foldersLbl:'Classement', catsLbl:'Catégories',
+    fInbox:'📥 Reçus', fStarred:'⭐ Suivis', fSnoozed:'💤 Reportés', fImportant:'❗ Important',
+    fSent:'📤 Envoyés', fScheduled:'🗓️ Planifiés', fDrafts:'📝 Brouillons', fSpam:'🚫 Spam', fTrash:'🗑️ Corbeille', fAll:'📚 Tous',
+    cPrimary:'Principale', cPromo:'Promotions', cSocial:'Social', cUpdates:'Notifications', cForums:'Forums',
+    curInbox:'Reçus', curStarred:'Suivis', curSnoozed:'Reportés', curImportant:'Important',
+    curSent:'Envoyés', curScheduled:'Planifiés', curDrafts:'Brouillons', curSpam:'Spam', curTrash:'Corbeille', curAll:'Tous',
+    backList:'← Liste', emptyDetail:'Sélectionnez un message.', loading:'Chargement…', noSubject:'(sans objet)',
+    actReply:'↩ Répondre', actReplyAll:'↩↩ À tous', actFwd:'↪ Transférer', actStar:'⭐ Étoile', actUnstar:'☆ Retirer étoile',
+    actUnread:'● Non lu', actRead:'○ Marquer lu', actArchive:'⬇ Archiver', actTrash:'🗑️ Supprimer',
+    statusRead:'Lu', statusUnread:'Non lu',
+    hdrFrom:'De', hdrTo:'À', hdrCc:'Cc', hdrBcc:'Cci', hdrReplyTo:'Reply-To', hdrDate:'Date',
+    to:'À *', cc:'Cc', bcc:'Cci', subject:'Objet *', body:'Message *', ccBcc:'+ Cc / Cci',
+    sendComp:'✉️ Envoyer', clearComp:'Effacer',
+    searchResa:'Rechercher une réservation', searchResaHint:'Recherche par n°, nom, email, téléphone, date, trajet, agence, statut.',
+    searchResaPh:'ID, nom, email, téléphone, date, agence, statut…',
+    resaLbl:'Réservation', langLbl:'Langue de l\'email', sendConfirm:'✉️ Envoyer email (API)',
+    tplHint:'Modèles de la feuille EMAIL_TEMPLATES (lecture). Utilisés pour la confirmation.',
+    tplPh:'Filtrer les modèles (langue, objet…)',
+    errActionUnknown:'Action Gmail non déployée. Apps Script : coller ERP TRANSFERS.gs.txt → Déployer → Nouvelle version. Le ping doit afficher v6.3-gmail.',
+    trashConfirm:'Supprimer cet email (corbeille) ?',
+    needOpen:'Ouvrez d\'abord un message', okTrash:'Supprimé', okArchive:'Archivé', okGeneric:'OK',
+    selectResa:'— Choisir une réservation —', noResa:'— Aucune réservation —',
+    searchMailPh:'Rechercher des emails…',
+    resaCount:'{n} réservation(s) · utilisez la recherche pour filtrer', resultCount:'{n} résultat(s)', showing200:' (affichage 200)', noEmail:'sans email'
+  },
+  EN:{
+    sectionTtl:'✉️ Email', hint:'Gmail mailbox — folders, categories, reading and compose.',
+    tabMailbox:'Inbox', tabCompose:'Compose', tabConfirm:'Confirmation', tabTpl:'Templates',
+    composeBtn:'✏️ Compose', refreshBtn:'↻', navToggle:'📁 Folders & categories', navToggleHide:'📁 Hide folders',
+    foldersLbl:'Folders', catsLbl:'Categories',
+    fInbox:'📥 Inbox', fStarred:'⭐ Starred', fSnoozed:'💤 Snoozed', fImportant:'❗ Important',
+    fSent:'📤 Sent', fScheduled:'🗓️ Scheduled', fDrafts:'📝 Drafts', fSpam:'🚫 Spam', fTrash:'🗑️ Trash', fAll:'📚 All',
+    cPrimary:'Primary', cPromo:'Promotions', cSocial:'Social', cUpdates:'Updates', cForums:'Forums',
+    curInbox:'Inbox', curStarred:'Starred', curSnoozed:'Snoozed', curImportant:'Important',
+    curSent:'Sent', curScheduled:'Scheduled', curDrafts:'Drafts', curSpam:'Spam', curTrash:'Trash', curAll:'All',
+    backList:'← List', emptyDetail:'Select a message.', loading:'Loading…', noSubject:'(no subject)',
+    actReply:'↩ Reply', actReplyAll:'↩↩ Reply all', actFwd:'↪ Forward', actStar:'⭐ Star', actUnstar:'☆ Unstar',
+    actUnread:'● Unread', actRead:'○ Mark read', actArchive:'⬇ Archive', actTrash:'🗑️ Delete',
+    statusRead:'Read', statusUnread:'Unread',
+    hdrFrom:'From', hdrTo:'To', hdrCc:'Cc', hdrBcc:'Bcc', hdrReplyTo:'Reply-To', hdrDate:'Date',
+    to:'To *', cc:'Cc', bcc:'Bcc', subject:'Subject *', body:'Message *', ccBcc:'+ Cc / Bcc',
+    sendComp:'✉️ Send', clearComp:'Clear',
+    searchResa:'Search reservation', searchResaHint:'Search by ID, name, email, phone, date, route, agency, status.',
+    searchResaPh:'ID, name, email, phone, date, agency, status…',
+    resaLbl:'Reservation', langLbl:'Email language', sendConfirm:'✉️ Send email (API)',
+    tplHint:'Templates from EMAIL_TEMPLATES sheet (read-only). Used for confirmation emails.',
+    tplPh:'Filter templates (language, subject…)',
+    errActionUnknown:'Gmail action not deployed. Apps Script: paste ERP TRANSFERS.gs.txt → Deploy → New version. Ping must show v6.3-gmail.',
+    trashConfirm:'Delete this email (move to trash)?',
+    needOpen:'Open a message first', okTrash:'Deleted', okArchive:'Archived', okGeneric:'OK',
+    selectResa:'— Select reservation —', noResa:'— No reservation —',
+    searchMailPh:'Search mail…',
+    resaCount:'{n} reservation(s) · use search to filter', resultCount:'{n} result(s)', showing200:' (showing 200)', noEmail:'no email'
+  },
+  ES:{
+    sectionTtl:'✉️ Email', hint:'Buzón Gmail — carpetas, categorías, lectura y redacción.',
+    tabMailbox:'Buzón', tabCompose:'Redactar', tabConfirm:'Confirmación', tabTpl:'Plantillas',
+    composeBtn:'✏️ Redactar', refreshBtn:'↻', navToggle:'📁 Carpetas y categorías', navToggleHide:'📁 Ocultar carpetas',
+    foldersLbl:'Clasificación', catsLbl:'Categorías',
+    fInbox:'📥 Recibidos', fStarred:'⭐ Destacados', fSnoozed:'💤 Pospuestos', fImportant:'❗ Importante',
+    fSent:'📤 Enviados', fScheduled:'🗓️ Programados', fDrafts:'📝 Borradores', fSpam:'🚫 Spam', fTrash:'🗑️ Papelera', fAll:'📚 Todos',
+    cPrimary:'Principal', cPromo:'Promociones', cSocial:'Social', cUpdates:'Notificaciones', cForums:'Foros',
+    curInbox:'Recibidos', curStarred:'Destacados', curSnoozed:'Pospuestos', curImportant:'Importante',
+    curSent:'Enviados', curScheduled:'Programados', curDrafts:'Borradores', curSpam:'Spam', curTrash:'Papelera', curAll:'Todos',
+    backList:'← Lista', emptyDetail:'Seleccione un mensaje.', loading:'Cargando…', noSubject:'(sin asunto)',
+    actReply:'↩ Responder', actReplyAll:'↩↩ A todos', actFwd:'↪ Reenviar', actStar:'⭐ Destacar', actUnstar:'☆ Quitar estrella',
+    actUnread:'● No leído', actRead:'○ Marcar leído', actArchive:'⬇ Archivar', actTrash:'🗑️ Eliminar',
+    statusRead:'Leído', statusUnread:'No leído',
+    hdrFrom:'De', hdrTo:'Para', hdrCc:'Cc', hdrBcc:'Cco', hdrReplyTo:'Reply-To', hdrDate:'Fecha',
+    to:'Para *', cc:'Cc', bcc:'Cco', subject:'Asunto *', body:'Mensaje *', ccBcc:'+ Cc / Cco',
+    sendComp:'✉️ Enviar', clearComp:'Limpiar',
+    searchResa:'Buscar reserva', searchResaHint:'Busque por nº, nombre, email, teléfono, fecha, ruta, agencia, estado.',
+    searchResaPh:'ID, nombre, email, teléfono, fecha, agencia, estado…',
+    resaLbl:'Reserva', langLbl:'Idioma del email', sendConfirm:'✉️ Enviar email (API)',
+    tplHint:'Plantillas de la hoja EMAIL_TEMPLATES (lectura). Usadas en la confirmación.',
+    tplPh:'Filtrar plantillas (idioma, asunto…)',
+    errActionUnknown:'Acción Gmail no desplegada. Apps Script: pegar ERP TRANSFERS.gs.txt → Implementar → Nueva versión. El ping debe mostrar v6.3-gmail.',
+    trashConfirm:'¿Eliminar este email (papelera)?',
+    needOpen:'Abra un mensaje primero', okTrash:'Eliminado', okArchive:'Archivado', okGeneric:'OK',
+    selectResa:'— Seleccionar reserva —', noResa:'— Ninguna reserva —',
+    searchMailPh:'Buscar correo…',
+    resaCount:'{n} reserva(s) · use la búsqueda para filtrar', resultCount:'{n} resultado(s)', showing200:' (mostrando 200)', noEmail:'sin email'
+  }
+};
+function emI18n(){ return EMAIL_MBOX_I18N[S.lang]||EMAIL_MBOX_I18N.PT; }
+function emFmtErr(err){
+  const s=String(err||'');
+  if(/Action inconnue:\s*gmail_/i.test(s)||/gmail_messageAction/i.test(s)&&/inconnue|unknown|desconocida|desconhecida/i.test(s))
+    return emI18n().errActionUnknown;
+  return s;
+}
+
+function applyEmailMailboxI18n(){
+  const e=emI18n();
+  const s=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null)el.textContent=v;};
+  const ph=(id,v)=>{const el=document.getElementById(id);if(el&&v!=null)el.placeholder=v;};
+  s('lbl-email-section-ttl',e.sectionTtl);
+  s('lbl-email-hint',e.hint);
+  s('em-tab-mailbox',e.tabMailbox);
+  s('em-tab-compose',e.tabCompose);
+  s('em-tab-send',e.tabConfirm);
+  s('em-tab-tpl',e.tabTpl);
+  s('btn-email-compose',e.composeBtn);
+  s('btn-email-refresh',e.refreshBtn);
+  const tog=document.getElementById('em-nav-toggle');
+  if(tog){
+    const open=document.getElementById('email-panel-mailbox')?.classList.contains('em-nav-open');
+    tog.textContent=open?e.navToggleHide:e.navToggle;
+  }
+  s('em-lbl-folders',e.foldersLbl);
+  s('em-lbl-cats',e.catsLbl);
+  s('em-f-inbox',e.fInbox); s('em-f-starred',e.fStarred); s('em-f-snoozed',e.fSnoozed); s('em-f-important',e.fImportant);
+  s('em-f-sent',e.fSent); s('em-f-scheduled',e.fScheduled); s('em-f-drafts',e.fDrafts); s('em-f-spam',e.fSpam); s('em-f-trash',e.fTrash); s('em-f-all',e.fAll);
+  s('em-c-primary',e.cPrimary); s('em-c-promotions',e.cPromo); s('em-c-social',e.cSocial); s('em-c-updates',e.cUpdates); s('em-c-forums',e.cForums);
+  s('em-btn-back',e.backList);
+  s('em-mbox-detail-empty',e.emptyDetail);
+  s('em-act-reply',e.actReply); s('em-act-replyall',e.actReplyAll); s('em-act-fwd',e.actFwd);
+  s('em-act-archive',e.actArchive); s('em-act-trash',e.actTrash);
+  updateEmailDetailActionLabels(S.emailCurrentMsg);
+  s('em-lbl-to',e.to); s('em-lbl-cc',e.cc); s('em-lbl-bcc',e.bcc); s('em-lbl-subject',e.subject); s('em-lbl-body',e.body);
+  s('em-btn-ccbcc',e.ccBcc); s('em-btn-send-comp',e.sendComp); s('em-btn-clear-comp',e.clearComp);
+  s('em-lbl-resa-search',e.searchResa); s('em-lbl-resa-search-hint',e.searchResaHint);
+  ph('em-tab-resa-q',e.searchResaPh);
+  s('lbl-em-resa',e.resaLbl); s('lbl-em-lang',e.langLbl); s('btn-em-send',e.sendConfirm);
+  s('lbl-em-tpl-hint',e.tplHint); ph('em-tpl-q',e.tplPh); ph('em-mbox-search',e.searchMailPh);
+  const ed=document.getElementById('em-comp-editor');
+  if(ed)ed.setAttribute('data-placeholder',e.body.replace(/\s*\*$/,'').trim()+'…');
+  highlightEmailFolders(S.emailFolder||'inbox');
+}
+
 // ═══════════════════════════════════════════════════════════
 // ÉTAT GLOBAL
 // ═══════════════════════════════════════════════════════════
@@ -2643,6 +2808,7 @@ function setLang(lang,zone){
   if(S.reservas.length>0) refreshStaffResaViews();
   if(S.prices&&S.prices.length)loadPrices();
   refreshEmailModalI18n();
+  applyEmailMailboxI18n();
 }
 
 function t(){return{...(LBL[S.lang]||LBL.PT),...(LBL_EXT[S.lang]||LBL_EXT.PT)};}
@@ -5177,13 +5343,14 @@ function highlightEmailFolders(folder){
   document.querySelectorAll('#email-folder-tabs [data-folder], #email-cat-tabs [data-folder]').forEach(el=>{
     el.classList.toggle('active', el.getAttribute('data-folder')===folder);
   });
+  const e=emI18n();
   const labels={
-    inbox:'Entrada', starred:'Estrela', snoozed:'Suspenso', important:'Importante',
-    sent:'Enviado', scheduled:'Agendado', drafts:'Rascunhos', spam:'Spam', trash:'Lixo', all:'Todos',
-    primary:'Principal', promotions:'Promoções', social:'Social', updates:'Atualizações', forums:'Fóruns'
+    inbox:e.curInbox, starred:e.curStarred, snoozed:e.curSnoozed, important:e.curImportant,
+    sent:e.curSent, scheduled:e.curScheduled, drafts:e.curDrafts, spam:e.curSpam, trash:e.curTrash, all:e.curAll,
+    primary:e.cPrimary, promotions:e.cPromo, social:e.cSocial, updates:e.cUpdates, forums:e.cForums
   };
   const cur=document.getElementById('em-current-folder');
-  if(cur)cur.textContent=labels[folder]||folder||'Entrada';
+  if(cur)cur.textContent=labels[folder]||folder||e.curInbox;
 }
 
 function switchEmailFolder(folder){
@@ -5198,7 +5365,7 @@ function switchEmailFolder(folder){
   const btn=document.getElementById('em-nav-toggle');
   if(panel&&panel.classList.contains('em-nav-open')){
     panel.classList.remove('em-nav-open');
-    if(btn)btn.textContent='📁 Dossiers & catégories';
+    if(btn)btn.textContent=emI18n().navToggle;
   }
   loadEmailMailboxList();
 }
@@ -5208,7 +5375,8 @@ function toggleEmailNavPanels(){
   const btn=document.getElementById('em-nav-toggle');
   if(!panel)return;
   const open=panel.classList.toggle('em-nav-open');
-  if(btn)btn.textContent=open?'📁 Masquer dossiers':'📁 Dossiers & catégories';
+  const e=emI18n();
+  if(btn)btn.textContent=open?e.navToggleHide:e.navToggle;
 }
 
 function toggleComposeCcBcc(){
@@ -5345,14 +5513,15 @@ function fillEmailTabResaSelect(){
   sel.innerHTML='';
   const opt0=document.createElement('option');
   opt0.value='';
-  opt0.textContent=filtered.length?'— Selecionar reserva —':'— Nenhuma reserva —';
+  const ei=emI18n();
+  opt0.textContent=filtered.length?ei.selectResa:ei.noResa;
   sel.appendChild(opt0);
   const maxShow=Math.min(filtered.length,200);
   for(var i=0;i<maxShow;i++){
     const r=filtered[i];
     const opt=document.createElement('option');
     opt.value=r.id;
-    const mail=r.clientEmail||'sem email';
+    const mail=r.clientEmail||ei.noEmail;
     const tel=r.telephone||r.clientTel||'';
     opt.textContent=`${r.id} · ${r.clientNom||'—'} · ${mail}${tel?' · '+tel:''} · ${fmtD?fmtD(r.dateTransfer):(r.dateTransfer||'—')} · ${r.statut||''}`;
     sel.appendChild(opt);
@@ -5363,8 +5532,8 @@ function fillEmailTabResaSelect(){
   const cnt=document.getElementById('em-tab-resa-count');
   if(cnt){
     cnt.textContent=tokens.length
-      ? `${filtered.length} resultado(s)`+(filtered.length>200?' (mostrando 200)':'')
-      : `${list.length} reserva(s) · use a pesquisa para filtrar`;
+      ? ei.resultCount.replace('{n}',filtered.length)+(filtered.length>200?ei.showing200:'')
+      : ei.resaCount.replace('{n}',list.length);
   }
   updateEmailTabClientInfo();
 }
@@ -5459,16 +5628,9 @@ function markEmailRowReadLocal(messageId){
     const badge=btn.querySelector('.em-unread-badge');
     if(badge)badge.remove();
     btn.querySelectorAll('.em-row-status').forEach(sp=>{
-      sp.textContent='Lu';
+      sp.textContent=emI18n().statusRead;
       sp.classList.remove('unread');
       sp.classList.add('read');
-    });
-    btn.querySelectorAll('span').forEach(sp=>{
-      if(sp.classList.contains('em-row-status'))return;
-      if(sp.textContent&&sp.textContent.trim()==='Non lu'){
-        sp.textContent='Lu';
-        sp.style.color='var(--ts)';
-      }
     });
   };
   const sel='#em-mbox-list button[data-mid="'+String(messageId).replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"]';
@@ -5515,7 +5677,7 @@ async function loadEmailMailboxList(){
       const draftMark=(m.folder==='drafts'||folder==='drafts')?'<span style="color:var(--danger)">Rascunho </span>':'';
       const unreadBadge=isUnread?'<span class="em-unread-badge" aria-hidden="true"></span>':'';
       const statusCls=isUnread?'em-row-status unread':'em-row-status read';
-      const statusTxt=isUnread?'Non lu':'Lu';
+      const statusTxt=isUnread?emI18n().statusUnread:emI18n().statusRead;
       html+=`<button type="button" class="em-row ${isUnread?'em-unread':'em-read'}" data-mid="${escEm(m.id)}" data-sel="${isSel?'1':'0'}" onclick="openEmailMailboxMessage(this.getAttribute('data-mid'))">
         <div class="em-row-top">
           <span class="em-row-from">${unreadBadge}${star}${escEm(who)} <span class="${statusCls}">${statusTxt}</span></span>
@@ -5541,7 +5703,7 @@ async function openEmailMailboxMessage(messageId){
   if(empty)empty.style.display='none';
   if(body){
     body.style.display='flex';
-    document.getElementById('em-mbox-subject').textContent='Chargement…';
+    document.getElementById('em-mbox-subject').textContent=emI18n().loading;
     document.getElementById('em-mbox-headers').textContent='';
     document.getElementById('em-mbox-html').innerHTML='';
     document.getElementById('em-mbox-attachments').innerHTML='';
@@ -5560,16 +5722,17 @@ async function openEmailMailboxMessage(messageId){
     }
     const m=d.message||{};
     S.emailCurrentMsg=m;
-    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'')+(m.unread?' · Non lu':' · Lu');
-    document.getElementById('em-mbox-subject').textContent=m.subject||'(sans objet)';
+    const ei=emI18n();
+    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'')+(m.unread?' · '+ei.statusUnread:' · '+ei.statusRead);
+    document.getElementById('em-mbox-subject').textContent=m.subject||ei.noSubject;
     updateEmailDetailActionLabels(m);
     document.getElementById('em-mbox-headers').innerHTML=
-      `<div><strong>De :</strong> ${escEm(m.from)}</div>`+
-      `<div><strong>À :</strong> ${escEm(m.to)}</div>`+
-      (m.cc?`<div><strong>Cc :</strong> ${escEm(m.cc)}</div>`:'')+
-      (m.bcc?`<div><strong>Bcc :</strong> ${escEm(m.bcc)}</div>`:'')+
-      (m.replyTo?`<div><strong>Reply-To :</strong> ${escEm(m.replyTo)}</div>`:'')+
-      `<div><strong>Date :</strong> ${escEm(fmtEmailDate(m.date))}</div>`;
+      `<div><strong>${ei.hdrFrom} :</strong> ${escEm(m.from)}</div>`+
+      `<div><strong>${ei.hdrTo} :</strong> ${escEm(m.to)}</div>`+
+      (m.cc?`<div><strong>${ei.hdrCc} :</strong> ${escEm(m.cc)}</div>`:'')+
+      (m.bcc?`<div><strong>${ei.hdrBcc} :</strong> ${escEm(m.bcc)}</div>`:'')+
+      (m.replyTo?`<div><strong>${ei.hdrReplyTo} :</strong> ${escEm(m.replyTo)}</div>`:'')+
+      `<div><strong>${ei.hdrDate} :</strong> ${escEm(fmtEmailDate(m.date))}</div>`;
     const atts=m.attachments||[];
     document.getElementById('em-mbox-attachments').innerHTML=atts.length
       ? ('📎 '+atts.map(a=>escEm(a.name||'fichier')+' ('+Math.round((a.size||0)/1024)+' Ko)').join(' · '))
@@ -5650,7 +5813,7 @@ function extractEmailAddr(s){
 
 function replyEmailMailboxMessage(){
   const m=S.emailCurrentMsg;
-  if(!m){ if(typeof toast==='function')toast('Ouvrez un message d’abord','error'); return; }
+  if(!m){ if(typeof toast==='function')toast(emI18n().needOpen,'error'); return; }
   switchEmailPanel('compose');
   document.getElementById('em-comp-to').value=extractEmailAddr(m.from);
   document.getElementById('em-comp-cc').value='';
@@ -5664,7 +5827,7 @@ function replyEmailMailboxMessage(){
 
 function replyAllEmailMailboxMessage(){
   const m=S.emailCurrentMsg;
-  if(!m){ if(typeof toast==='function')toast('Ouvrez un message d’abord','error'); return; }
+  if(!m){ if(typeof toast==='function')toast(emI18n().needOpen,'error'); return; }
   switchEmailPanel('compose');
   document.getElementById('em-comp-to').value=extractEmailAddr(m.from);
   const ccParts=[];
@@ -5685,7 +5848,7 @@ function replyAllEmailMailboxMessage(){
 
 function forwardEmailMailboxMessage(){
   const m=S.emailCurrentMsg;
-  if(!m){ if(typeof toast==='function')toast('Ouvrez un message d’abord','error'); return; }
+  if(!m){ if(typeof toast==='function')toast(emI18n().needOpen,'error'); return; }
   switchEmailPanel('compose');
   document.getElementById('em-comp-to').value='';
   document.getElementById('em-comp-cc').value='';
@@ -5701,20 +5864,22 @@ function forwardEmailMailboxMessage(){
 async function emailMsgAction(op){
   const m=S.emailCurrentMsg;
   const msg=document.getElementById('em-mbox-msg');
-  if(!m||!m.id){ if(typeof toast==='function')toast('Ouvrez un message d’abord','error'); return; }
+  const ei=emI18n();
+  if(!m||!m.id){ if(typeof toast==='function')toast(ei.needOpen,'error'); return; }
   let realOp=op;
   if(op==='star') realOp=m.starred?'unstar':'star';
-  if(op==='trash'&&!confirm('Eliminar este email (mover para o lixo)?'))return;
+  if(op==='trash'&&!confirm(ei.trashConfirm))return;
   try{
     const d=await api({action:'gmail_messageAction',adminToken:S.token,messageId:m.id,op:realOp});
     if(!d||!d.success){
       if(d&&d.sessionExpired){doLogout();return;}
-      if(msg){msg.textContent=(d&&d.error)||'Erreur';msg.className='modal-msg error show';}
-      if(typeof toast==='function')toast((d&&d.error)||'Erreur','error');
+      const errTxt=emFmtErr((d&&d.error)||'Erreur');
+      if(msg){msg.textContent=errTxt;msg.className='modal-msg error show';}
+      if(typeof toast==='function')toast(errTxt,'error');
       return;
     }
     if(realOp==='trash'||realOp==='archive'){
-      if(typeof toast==='function')toast(realOp==='trash'?'Eliminado':'Arquivado','success');
+      if(typeof toast==='function')toast(realOp==='trash'?ei.okTrash:ei.okArchive,'success');
       clearEmailMailboxDetail();
       emailBackToList();
       loadEmailMailboxList();
@@ -5727,19 +5892,22 @@ async function emailMsgAction(op){
     if(realOp==='markUnread'){ m.unread=true; markEmailRowUnreadLocal(m.id); }
     else if(realOp==='markRead'){ m.unread=false; markEmailRowReadLocal(m.id); }
     updateEmailDetailActionLabels(m);
-    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'')+(m.unread?' · Non lu':' · Lu');
-    if(typeof toast==='function')toast('OK','success');
+    document.getElementById('em-mbox-meta').textContent=fmtEmailDate(m.date)+(m.starred?' · ⭐':'')+(m.unread?' · '+ei.statusUnread:' · '+ei.statusRead);
+    if(typeof toast==='function')toast(ei.okGeneric,'success');
   }catch(err){
-    if(msg){msg.textContent=String(err.message||err);msg.className='modal-msg error show';}
+    const errTxt=emFmtErr(err.message||err);
+    if(msg){msg.textContent=errTxt;msg.className='modal-msg error show';}
+    if(typeof toast==='function')toast(errTxt,'error');
   }
 }
 
 function updateEmailDetailActionLabels(m){
+  const e=emI18n();
   const starBtn=document.getElementById('em-act-star');
   const unreadBtn=document.getElementById('em-act-unread');
-  if(starBtn)starBtn.textContent=m&&m.starred?'☆ Retirer étoile':'⭐ Étoile';
+  if(starBtn)starBtn.textContent=m&&m.starred?e.actUnstar:e.actStar;
   if(unreadBtn){
-    unreadBtn.textContent=m&&m.unread?'○ Marquer lu':'● Non lu';
+    unreadBtn.textContent=m&&m.unread?e.actRead:e.actUnread;
     unreadBtn.setAttribute('onclick', m&&m.unread?"emailMsgAction('markRead')":"emailMsgAction('markUnread')");
   }
 }
@@ -5762,7 +5930,7 @@ function markEmailRowUnreadLocal(messageId){
       if(from)from.insertBefore(badge,from.firstChild);
     }
     btn.querySelectorAll('.em-row-status').forEach(sp=>{
-      sp.textContent='Non lu';
+      sp.textContent=emI18n().statusUnread;
       sp.classList.remove('read');
       sp.classList.add('unread');
     });
