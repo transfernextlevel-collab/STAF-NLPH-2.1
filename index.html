@@ -672,6 +672,7 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="NLPH Staff 2.1">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
 </head>
 <body>
 
@@ -1156,6 +1157,17 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
                 <div class="email-tab" data-folder="forums" onclick="switchEmailFolder('forums')" id="em-c-forums">Fóruns</div>
               </div>
               <div class="tbl-wrap em-list-wrap" id="em-mbox-list"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
+              <div class="em-mbox-pager" id="em-mbox-pager">
+                <label class="em-pager-lbl" id="em-lbl-page-size" for="em-mbox-page-size">Mostrar</label>
+                <select id="em-mbox-page-size" class="em-pager-select" onchange="changeEmailMboxPageSize()" aria-label="Tamanho da página">
+                  <option value="20">20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+                <span class="em-pager-range" id="em-mbox-range">—</span>
+                <button type="button" class="btn btn-ghost btn-sm em-pager-btn" id="em-mbox-prev" onclick="emailMboxPrevPage()" disabled>‹</button>
+                <button type="button" class="btn btn-ghost btn-sm em-pager-btn" id="em-mbox-next" onclick="emailMboxNextPage()" disabled>›</button>
+              </div>
             </div>
             <div id="em-mbox-detail" class="em-detail">
               <button type="button" class="btn btn-ghost btn-sm em-back-list" onclick="emailBackToList()" id="em-btn-back">← Lista</button>
@@ -1286,7 +1298,13 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
 .em-list-col{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0}
 .em-cat-tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:0;gap:4px;padding-bottom:6px;scrollbar-width:thin}
 .em-cat-tabs .email-tab{flex:0 0 auto;min-height:36px;padding:6px 12px;touch-action:manipulation}
-.em-list-wrap{flex:1;max-height:calc(100vh - 280px);min-height:360px;overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border2);border-radius:var(--r);background:var(--white)}
+.em-list-wrap{flex:1;max-height:calc(100vh - 320px);min-height:360px;overflow:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border2);border-radius:var(--r);background:var(--white)}
+.em-mbox-pager{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 4px 4px;font-size:12px;color:var(--tm)}
+.em-pager-lbl{font-size:11px;color:var(--ts);white-space:nowrap}
+.em-pager-select{min-height:36px;padding:6px 8px;border-radius:6px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;font-family:inherit}
+.em-pager-range{flex:1;min-width:60px;text-align:center;font-weight:600;color:var(--text);font-size:12px}
+.em-pager-btn{min-width:40px;min-height:36px;padding:6px 10px!important;font-size:16px!important;line-height:1}
+.em-pager-btn:disabled{opacity:.35;pointer-events:none}
 .em-list-wrap button{width:100%;box-sizing:border-box;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
 .em-row{text-align:left;border:0;border-bottom:1px solid var(--border2);padding:12px 14px;cursor:pointer;width:100%;font-family:inherit;display:block}
 .em-row.em-unread{font-weight:700;color:var(--text);border-left:3px solid #1a73e8;background:rgba(26,115,232,.06)}
@@ -2490,6 +2508,8 @@ const EMAIL_MBOX_I18N={
     needOpen:'Abra uma mensagem primeiro', okTrash:'Eliminado', okArchive:'Arquivado', okGeneric:'OK',
     selectResa:'— Selecionar reserva —', noResa:'— Nenhuma reserva —',
     searchMailPh:'Pesquisar correio…',
+    pageSizeLbl:'Mostrar', pagePrev:'Anterior', pageNext:'Seguinte', pageRange:'{from}–{to}',
+    emptyFolder:'Nenhuma mensagem nesta pasta.', emptySearch:'Nenhum resultado.',
     resaCount:'{n} reserva(s) · use a pesquisa para filtrar', resultCount:'{n} resultado(s)', showing200:' (a mostrar 200)', noEmail:'sem email'
   },
   FR:{
@@ -2519,6 +2539,8 @@ const EMAIL_MBOX_I18N={
     needOpen:'Ouvrez d\'abord un message', okTrash:'Supprimé', okArchive:'Archivé', okGeneric:'OK',
     selectResa:'— Choisir une réservation —', noResa:'— Aucune réservation —',
     searchMailPh:'Rechercher des emails…',
+    pageSizeLbl:'Afficher', pagePrev:'Préc.', pageNext:'Suiv.', pageRange:'{from}–{to}',
+    emptyFolder:'Aucun message dans ce dossier.', emptySearch:'Aucun résultat.',
     resaCount:'{n} réservation(s) · utilisez la recherche pour filtrer', resultCount:'{n} résultat(s)', showing200:' (affichage 200)', noEmail:'sans email'
   },
   EN:{
@@ -2548,6 +2570,8 @@ const EMAIL_MBOX_I18N={
     needOpen:'Open a message first', okTrash:'Deleted', okArchive:'Archived', okGeneric:'OK',
     selectResa:'— Select reservation —', noResa:'— No reservation —',
     searchMailPh:'Search mail…',
+    pageSizeLbl:'Show', pagePrev:'Prev', pageNext:'Next', pageRange:'{from}–{to}',
+    emptyFolder:'No messages in this folder.', emptySearch:'No results.',
     resaCount:'{n} reservation(s) · use search to filter', resultCount:'{n} result(s)', showing200:' (showing 200)', noEmail:'no email'
   },
   ES:{
@@ -2577,6 +2601,8 @@ const EMAIL_MBOX_I18N={
     needOpen:'Abra un mensaje primero', okTrash:'Eliminado', okArchive:'Archivado', okGeneric:'OK',
     selectResa:'— Seleccionar reserva —', noResa:'— Ninguna reserva —',
     searchMailPh:'Buscar correo…',
+    pageSizeLbl:'Mostrar', pagePrev:'Ant.', pageNext:'Sig.', pageRange:'{from}–{to}',
+    emptyFolder:'Ningún mensaje en esta carpeta.', emptySearch:'Sin resultados.',
     resaCount:'{n} reserva(s) · use la búsqueda para filtrar', resultCount:'{n} resultado(s)', showing200:' (mostrando 200)', noEmail:'sin email'
   }
 };
@@ -2621,6 +2647,12 @@ function applyEmailMailboxI18n(){
   ph('em-tab-resa-q',e.searchResaPh);
   s('lbl-em-resa',e.resaLbl); s('lbl-em-lang',e.langLbl); s('btn-em-send',e.sendConfirm);
   s('lbl-em-tpl-hint',e.tplHint); ph('em-tpl-q',e.tplPh); ph('em-mbox-search',e.searchMailPh);
+  s('em-lbl-page-size',e.pageSizeLbl);
+  const prevBtn=document.getElementById('em-mbox-prev');
+  const nextBtn=document.getElementById('em-mbox-next');
+  if(prevBtn){prevBtn.textContent='‹ '+e.pagePrev; prevBtn.setAttribute('aria-label',e.pagePrev);}
+  if(nextBtn){nextBtn.textContent=e.pageNext+' ›'; nextBtn.setAttribute('aria-label',e.pageNext);}
+  updateEmailMboxPager(S.emailMboxPagerMeta||null);
   const ed=document.getElementById('em-comp-editor');
   if(ed)ed.setAttribute('data-placeholder',e.body.replace(/\s*\*$/,'').trim()+'…');
   highlightEmailFolders(S.emailFolder||'inbox');
@@ -2649,6 +2681,63 @@ const HOTEL_ACT_KEY = 'nlp_hotel_last_activity';
 const WORK_BG_SS = 'nlp_staff_work_bg';
 const WORK_BG_DEFAULT = '#E8EEF6';
 const WORK_BG_PRESETS = ['#E8EEF6','#F5F0E8','#E8F4F0','#FFF8E7','#EEF2FF','#FFFFFF','#F0F4F8'];
+const EMAIL_MBOX_PS_SS = 'nlp_email_mbox_ps';
+const EMAIL_MBOX_PAGE_SIZES = [20, 50, 100];
+
+function getEmailMboxPageSize(){
+  const sel=document.getElementById('em-mbox-page-size');
+  let n=parseInt(sel&&sel.value,10);
+  if(!EMAIL_MBOX_PAGE_SIZES.includes(n)){
+    try{
+      n=parseInt(sessionStorage.getItem(EMAIL_MBOX_PS_SS),10);
+    }catch(e){}
+  }
+  if(!EMAIL_MBOX_PAGE_SIZES.includes(n))n=20;
+  if(sel&&sel.value!==String(n))sel.value=String(n);
+  return n;
+}
+function emailMboxResetPage(){ S.emailMboxStart=0; }
+function changeEmailMboxPageSize(){
+  const n=getEmailMboxPageSize();
+  try{ sessionStorage.setItem(EMAIL_MBOX_PS_SS,String(n)); }catch(e){}
+  S.emailMboxPageSize=n;
+  emailMboxResetPage();
+  loadEmailMailboxList();
+}
+function emailMboxPrevPage(){
+  const ps=getEmailMboxPageSize();
+  S.emailMboxStart=Math.max(0,(S.emailMboxStart||0)-ps);
+  loadEmailMailboxList();
+}
+function emailMboxNextPage(){
+  const ps=getEmailMboxPageSize();
+  if(!S.emailMboxPagerMeta||!S.emailMboxPagerMeta.hasMore)return;
+  S.emailMboxStart=(S.emailMboxStart||0)+ps;
+  loadEmailMailboxList();
+}
+function updateEmailMboxPager(meta){
+  const e=emI18n();
+  const rangeEl=document.getElementById('em-mbox-range');
+  const prevBtn=document.getElementById('em-mbox-prev');
+  const nextBtn=document.getElementById('em-mbox-next');
+  const pager=document.getElementById('em-mbox-pager');
+  if(!rangeEl||!prevBtn||!nextBtn)return;
+  if(!meta){
+    rangeEl.textContent='—';
+    prevBtn.disabled=true;
+    nextBtn.disabled=true;
+    if(pager)pager.style.display='';
+    return;
+  }
+  const start=meta.start||0;
+  const count=meta.count||0;
+  const from=count?start+1:0;
+  const to=start+count;
+  rangeEl.textContent=count?e.pageRange.replace('{from}',from).replace('{to}',to):'—';
+  prevBtn.disabled=start<=0;
+  nextBtn.disabled=!meta.hasMore;
+  if(pager)pager.style.display='';
+}
 
 function closeWorkBgPop(){
   const pop=document.getElementById('work-bg-pop');
@@ -5356,6 +5445,7 @@ function highlightEmailFolders(folder){
 function switchEmailFolder(folder){
   S.emailFolder=folder||'inbox';
   S.emailSearchQ='';
+  emailMboxResetPage();
   const search=document.getElementById('em-mbox-search');
   if(search)search.value='';
   highlightEmailFolders(S.emailFolder);
@@ -5456,6 +5546,7 @@ function emailShowDetailMobile(){
 function runEmailMailboxSearch(){
   const q=(document.getElementById('em-mbox-search')?.value||'').trim();
   S.emailSearchQ=q;
+  emailMboxResetPage();
   if(!q){ switchEmailFolder(S.emailFolder||'inbox'); return; }
   document.querySelectorAll('#email-folder-tabs [data-folder], #email-cat-tabs [data-folder]').forEach(el=>el.classList.remove('active'));
   clearEmailMailboxDetail();
@@ -5562,6 +5653,15 @@ function updateEmailTabClientInfo(){
 
 async function loadEmailTab(){
   if(!S.emailFolder)S.emailFolder='inbox';
+  if(typeof S.emailMboxStart!=='number')S.emailMboxStart=0;
+  try{
+    const ps=parseInt(sessionStorage.getItem(EMAIL_MBOX_PS_SS),10);
+    if(EMAIL_MBOX_PAGE_SIZES.includes(ps)){
+      S.emailMboxPageSize=ps;
+      const sel=document.getElementById('em-mbox-page-size');
+      if(sel)sel.value=String(ps);
+    }
+  }catch(e){}
   fillEmailTabLangSelect();
   const msg=document.getElementById('em-tab-msg');
   if(msg){msg.className='modal-msg';msg.textContent='';}
@@ -5647,9 +5747,13 @@ async function loadEmailMailboxList(){
   if(!wrap)return;
   const folder=S.emailFolder||'inbox';
   const q=S.emailSearchQ||'';
-  wrap.innerHTML='<div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div>';
+  const pageSize=getEmailMboxPageSize();
+  const start=Math.max(0,S.emailMboxStart||0);
+  S.emailMboxPageSize=pageSize;
+  wrap.innerHTML='<div class="loader"><div class="loader-ring"></div><p>'+escEm(emI18n().loading)+'</p></div>';
+  updateEmailMboxPager(null);
   try{
-    const payload={action:'gmail_listFolder',adminToken:S.token,start:0,maxResults:20};
+    const payload={action:'gmail_listFolder',adminToken:S.token,start:start,maxResults:pageSize};
     if(q)payload.q=q; else payload.folder=folder;
     const d=await api(payload);
     if(!d||!d.success){
@@ -5660,12 +5764,23 @@ async function loadEmailMailboxList(){
         : '';
       wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${escEm(errTxt)}${escEm(deployHint)}</p>`;
       if(msg){msg.textContent=errTxt;msg.className='modal-msg error show';}
+      updateEmailMboxPager(null);
       return;
     }
     const list=d.messages||[];
     S.emailListCache=list;
+    const pagerMeta={
+      start:d.start!=null?d.start:start,
+      count:d.count!=null?d.count:list.length,
+      hasMore:!!d.hasMore,
+      maxResults:d.maxResults||pageSize
+    };
+    S.emailMboxPagerMeta=pagerMeta;
+    S.emailMboxStart=pagerMeta.start;
+    updateEmailMboxPager(pagerMeta);
+    const ei=emI18n();
     if(!list.length){
-      wrap.innerHTML=`<p style="padding:16px;color:var(--ts)">${q?'Nenhum resultado.':'Aucun message dans ce dossier.'}</p>`;
+      wrap.innerHTML=`<p style="padding:16px;color:var(--ts)">${escEm(q?ei.emptySearch:ei.emptyFolder)}</p>`;
       return;
     }
     let html='<div style="display:flex;flex-direction:column">';
@@ -5677,19 +5792,20 @@ async function loadEmailMailboxList(){
       const draftMark=(m.folder==='drafts'||folder==='drafts')?'<span style="color:var(--danger)">Rascunho </span>':'';
       const unreadBadge=isUnread?'<span class="em-unread-badge" aria-hidden="true"></span>':'';
       const statusCls=isUnread?'em-row-status unread':'em-row-status read';
-      const statusTxt=isUnread?emI18n().statusUnread:emI18n().statusRead;
+      const statusTxt=isUnread?ei.statusUnread:ei.statusRead;
       html+=`<button type="button" class="em-row ${isUnread?'em-unread':'em-read'}" data-mid="${escEm(m.id)}" data-sel="${isSel?'1':'0'}" onclick="openEmailMailboxMessage(this.getAttribute('data-mid'))">
         <div class="em-row-top">
           <span class="em-row-from">${unreadBadge}${star}${escEm(who)} <span class="${statusCls}">${statusTxt}</span></span>
           <span class="em-row-date">${escEm(fmtEmailDate(m.date))}</span>
         </div>
-        <div class="em-row-subj">${draftMark}${escEm(m.subject||'(sans objet)')}</div>
+        <div class="em-row-subj">${draftMark}${escEm(m.subject||ei.noSubject)}</div>
       </button>`;
     });
     html+='</div>';
     wrap.innerHTML=html;
   }catch(err){
     wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${escEm(err.message||err)}</p>`;
+    updateEmailMboxPager(null);
   }
 }
 
@@ -6187,5 +6303,6 @@ document.addEventListener('keydown',e=>{
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js', { scope: './' }).catch(function () {});
 }
-</script></body>
+</script>
+</body>
 </html>
