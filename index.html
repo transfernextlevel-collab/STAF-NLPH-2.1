@@ -1119,7 +1119,6 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
           <div class="email-tab active" data-empanel="mailbox" onclick="switchEmailPanel('mailbox')" id="em-tab-mailbox">Boîte</div>
           <div class="email-tab" data-empanel="compose" onclick="switchEmailPanel('compose')" id="em-tab-compose">Compor</div>
           <div class="email-tab" data-empanel="send" onclick="switchEmailPanel('send')" id="em-tab-send">Confirmação</div>
-          <div class="email-tab" data-empanel="templates" onclick="switchEmailPanel('templates')" id="em-tab-tpl">Modelos</div>
         </div>
 
         <div id="email-panel-mailbox" class="em-panel-mailbox">
@@ -1247,13 +1246,6 @@ html[data-theme="dark"] .modal-msg.error{color:#fca5a5}
             <button type="button" class="btn btn-navy" onclick="sendEmailTabConfirmacao()" id="btn-em-send">✉️ Enviar email (API)</button>
           </div>
           <div class="modal-msg" id="em-tab-msg"></div>
-        </div>
-        <div id="email-panel-templates" style="display:none">
-          <p class="em-tpl-hint" id="lbl-em-tpl-hint">Modelos da folha EMAIL_TEMPLATES (leitura). Usados pela confirmação de reserva.</p>
-          <div class="f-group" style="margin-bottom:10px">
-            <input type="search" id="em-tpl-q" class="em-field" placeholder="Filtrar modelos (idioma, assunto…)" oninput="filterEmailTemplatesTab()" autocomplete="off">
-          </div>
-          <div class="tbl-wrap" id="em-tpl-wrap"><div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div></div>
         </div>
       </div>
     </div>
@@ -2483,7 +2475,7 @@ const LBL_EXT={
 const EMAIL_MBOX_I18N={
   PT:{
     sectionTtl:'✉️ Email', hint:'Caixa Gmail — pastas, categorias, leitura e composição.',
-    tabMailbox:'Caixa', tabCompose:'Compor', tabConfirm:'Confirmação', tabTpl:'Modelos',
+    tabMailbox:'Caixa', tabCompose:'Compor', tabConfirm:'Confirmação',
     composeBtn:'✏️ Compor', refreshBtn:'↻', navToggle:'📁 Pastas e categorias', navToggleHide:'📁 Ocultar pastas',
     foldersLbl:'Classificação', catsLbl:'Categorias',
     fInbox:'📥 Entrada', fStarred:'⭐ Estrela', fSnoozed:'💤 Suspenso', fImportant:'❗ Importante',
@@ -2501,8 +2493,6 @@ const EMAIL_MBOX_I18N={
     searchResa:'Pesquisar reserva', searchResaHint:'Pesquisa por nº, nome, email, telemóvel, data, percurso, agência, estado.',
     searchResaPh:'ID, nome, email, telefone, data, agência, estado…',
     resaLbl:'Reserva', langLbl:'Idioma do email', sendConfirm:'✉️ Enviar email (API)',
-    tplHint:'Modelos da folha EMAIL_TEMPLATES (leitura). Usados na confirmação.',
-    tplPh:'Filtrar modelos (idioma, assunto…)',
     errActionUnknown:'Ação Gmail não deployada. No Apps Script: colar ERP TRANSFERS.gs.txt → Deploy → Nova versão. O ping deve mostrar v6.3-gmail.',
     trashConfirm:'Eliminar este email (mover para o lixo)?',
     needOpen:'Abra uma mensagem primeiro', okTrash:'Eliminado', okArchive:'Arquivado', okGeneric:'OK',
@@ -2514,7 +2504,7 @@ const EMAIL_MBOX_I18N={
   },
   FR:{
     sectionTtl:'✉️ Email', hint:'Boîte Gmail — dossiers, catégories, lecture et composition.',
-    tabMailbox:'Boîte', tabCompose:'Composer', tabConfirm:'Confirmation', tabTpl:'Modèles',
+    tabMailbox:'Boîte', tabCompose:'Composer', tabConfirm:'Confirmation',
     composeBtn:'✏️ Composer', refreshBtn:'↻', navToggle:'📁 Dossiers et catégories', navToggleHide:'📁 Masquer dossiers',
     foldersLbl:'Classement', catsLbl:'Catégories',
     fInbox:'📥 Reçus', fStarred:'⭐ Suivis', fSnoozed:'💤 Reportés', fImportant:'❗ Important',
@@ -2532,8 +2522,6 @@ const EMAIL_MBOX_I18N={
     searchResa:'Rechercher une réservation', searchResaHint:'Recherche par n°, nom, email, téléphone, date, trajet, agence, statut.',
     searchResaPh:'ID, nom, email, téléphone, date, agence, statut…',
     resaLbl:'Réservation', langLbl:'Langue de l\'email', sendConfirm:'✉️ Envoyer email (API)',
-    tplHint:'Modèles de la feuille EMAIL_TEMPLATES (lecture). Utilisés pour la confirmation.',
-    tplPh:'Filtrer les modèles (langue, objet…)',
     errActionUnknown:'Action Gmail non déployée. Apps Script : coller ERP TRANSFERS.gs.txt → Déployer → Nouvelle version. Le ping doit afficher v6.3-gmail.',
     trashConfirm:'Supprimer cet email (corbeille) ?',
     needOpen:'Ouvrez d\'abord un message', okTrash:'Supprimé', okArchive:'Archivé', okGeneric:'OK',
@@ -2545,7 +2533,7 @@ const EMAIL_MBOX_I18N={
   },
   EN:{
     sectionTtl:'✉️ Email', hint:'Gmail mailbox — folders, categories, reading and compose.',
-    tabMailbox:'Inbox', tabCompose:'Compose', tabConfirm:'Confirmation', tabTpl:'Templates',
+    tabMailbox:'Inbox', tabCompose:'Compose', tabConfirm:'Confirmation',
     composeBtn:'✏️ Compose', refreshBtn:'↻', navToggle:'📁 Folders & categories', navToggleHide:'📁 Hide folders',
     foldersLbl:'Folders', catsLbl:'Categories',
     fInbox:'📥 Inbox', fStarred:'⭐ Starred', fSnoozed:'💤 Snoozed', fImportant:'❗ Important',
@@ -2563,8 +2551,6 @@ const EMAIL_MBOX_I18N={
     searchResa:'Search reservation', searchResaHint:'Search by ID, name, email, phone, date, route, agency, status.',
     searchResaPh:'ID, name, email, phone, date, agency, status…',
     resaLbl:'Reservation', langLbl:'Email language', sendConfirm:'✉️ Send email (API)',
-    tplHint:'Templates from EMAIL_TEMPLATES sheet (read-only). Used for confirmation emails.',
-    tplPh:'Filter templates (language, subject…)',
     errActionUnknown:'Gmail action not deployed. Apps Script: paste ERP TRANSFERS.gs.txt → Deploy → New version. Ping must show v6.3-gmail.',
     trashConfirm:'Delete this email (move to trash)?',
     needOpen:'Open a message first', okTrash:'Deleted', okArchive:'Archived', okGeneric:'OK',
@@ -2576,7 +2562,7 @@ const EMAIL_MBOX_I18N={
   },
   ES:{
     sectionTtl:'✉️ Email', hint:'Buzón Gmail — carpetas, categorías, lectura y redacción.',
-    tabMailbox:'Buzón', tabCompose:'Redactar', tabConfirm:'Confirmación', tabTpl:'Plantillas',
+    tabMailbox:'Buzón', tabCompose:'Redactar', tabConfirm:'Confirmación',
     composeBtn:'✏️ Redactar', refreshBtn:'↻', navToggle:'📁 Carpetas y categorías', navToggleHide:'📁 Ocultar carpetas',
     foldersLbl:'Clasificación', catsLbl:'Categorías',
     fInbox:'📥 Recibidos', fStarred:'⭐ Destacados', fSnoozed:'💤 Pospuestos', fImportant:'❗ Importante',
@@ -2594,8 +2580,6 @@ const EMAIL_MBOX_I18N={
     searchResa:'Buscar reserva', searchResaHint:'Busque por nº, nombre, email, teléfono, fecha, ruta, agencia, estado.',
     searchResaPh:'ID, nombre, email, teléfono, fecha, agencia, estado…',
     resaLbl:'Reserva', langLbl:'Idioma del email', sendConfirm:'✉️ Enviar email (API)',
-    tplHint:'Plantillas de la hoja EMAIL_TEMPLATES (lectura). Usadas en la confirmación.',
-    tplPh:'Filtrar plantillas (idioma, asunto…)',
     errActionUnknown:'Acción Gmail no desplegada. Apps Script: pegar ERP TRANSFERS.gs.txt → Implementar → Nueva versión. El ping debe mostrar v6.3-gmail.',
     trashConfirm:'¿Eliminar este email (papelera)?',
     needOpen:'Abra un mensaje primero', okTrash:'Eliminado', okArchive:'Archivado', okGeneric:'OK',
@@ -2623,7 +2607,6 @@ function applyEmailMailboxI18n(){
   s('em-tab-mailbox',e.tabMailbox);
   s('em-tab-compose',e.tabCompose);
   s('em-tab-send',e.tabConfirm);
-  s('em-tab-tpl',e.tabTpl);
   s('btn-email-compose',e.composeBtn);
   s('btn-email-refresh',e.refreshBtn);
   const tog=document.getElementById('em-nav-toggle');
@@ -2646,7 +2629,7 @@ function applyEmailMailboxI18n(){
   s('em-lbl-resa-search',e.searchResa); s('em-lbl-resa-search-hint',e.searchResaHint);
   ph('em-tab-resa-q',e.searchResaPh);
   s('lbl-em-resa',e.resaLbl); s('lbl-em-lang',e.langLbl); s('btn-em-send',e.sendConfirm);
-  s('lbl-em-tpl-hint',e.tplHint); ph('em-tpl-q',e.tplPh); ph('em-mbox-search',e.searchMailPh);
+  ph('em-mbox-search',e.searchMailPh);
   s('em-lbl-page-size',e.pageSizeLbl);
   const prevBtn=document.getElementById('em-mbox-prev');
   const nextBtn=document.getElementById('em-mbox-next');
@@ -5418,13 +5401,10 @@ function switchEmailPanel(which){
   const mbox=document.getElementById('email-panel-mailbox');
   const comp=document.getElementById('email-panel-compose');
   const send=document.getElementById('email-panel-send');
-  const tpl=document.getElementById('email-panel-templates');
   if(mbox)mbox.style.display=which==='mailbox'?'':'none';
   if(comp)comp.style.display=which==='compose'?'':'none';
   if(send)send.style.display=which==='send'?'':'none';
-  if(tpl)tpl.style.display=which==='templates'?'':'none';
   if(which==='mailbox'){ emailBackToList(); loadEmailMailbox(); }
-  if(which==='templates')loadEmailTemplatesTab();
   if(which==='send'){ fillEmailTabLangSelect(); fillEmailTabResaSelect(); }
 }
 
@@ -5672,7 +5652,6 @@ async function loadEmailTab(){
   const active=document.querySelector('#email-main-tabs .email-tab.active');
   const panel=active?active.getAttribute('data-empanel'):'mailbox';
   if(panel==='mailbox'||!panel)await loadEmailMailbox();
-  else if(panel==='templates')await loadEmailTemplatesTab();
 }
 
 async function loadEmailMailbox(){
@@ -6118,57 +6097,6 @@ async function sendEmailTabConfirmacao(){
   }catch(err){
     if(msg){msg.textContent='❌ '+(err.message||err);msg.className='modal-msg error show';}
   }
-}
-
-async function loadEmailTemplatesTab(){
-  const wrap=document.getElementById('em-tpl-wrap');
-  if(!wrap)return;
-  wrap.innerHTML='<div class="loader"><div class="loader-ring"></div><p>A carregar…</p></div>';
-  try{
-    const d=await api({action:'getEmailTemplates',adminToken:S.token});
-    if(!d||!d.success){
-      if(d&&d.sessionExpired){doLogout();return;}
-      wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${(d&&d.error)||'Erro ao carregar modelos'}</p>`;
-      return;
-    }
-    S.emailTemplatesCache=d.templates||[];
-    renderEmailTemplatesTab();
-  }catch(err){
-    wrap.innerHTML=`<p style="padding:16px;color:var(--danger)">❌ ${err.message||err}</p>`;
-  }
-}
-
-function filterEmailTemplatesTab(){ renderEmailTemplatesTab(); }
-
-function renderEmailTemplatesTab(){
-  const wrap=document.getElementById('em-tpl-wrap');
-  if(!wrap)return;
-  const q=(document.getElementById('em-tpl-q')?.value||'').trim().toLowerCase();
-  const tpls=S.emailTemplatesCache||[];
-  if(!tpls.length){
-    wrap.innerHTML='<p style="padding:16px;color:var(--ts)">Nenhum modelo na folha EMAIL_TEMPLATES.</p>';
-    return;
-  }
-  const filtered=q?tpls.filter(t=>{
-    const h=((t.lang||'')+' '+(t.sujet||'')+' '+String(t.messageHtml||'').replace(/<[^>]+>/g,' ')).toLowerCase();
-    return h.indexOf(q)>=0;
-  }):tpls;
-  if(!filtered.length){
-    wrap.innerHTML='<p style="padding:16px;color:var(--ts)">Nenhum modelo corresponde à pesquisa.</p>';
-    return;
-  }
-  let html='<table><thead><tr><th>Idioma</th><th>Assunto</th><th>Pré-visualização</th></tr></thead><tbody>';
-  filtered.forEach(t=>{
-    const preview=String(t.messageHtml||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim().slice(0,160);
-    html+=`<tr>
-      <td class="mono" style="white-space:nowrap">${escEm(t.lang||'')}</td>
-      <td style="font-weight:600">${escEm(t.sujet||'(sem assunto)')}</td>
-      <td style="font-size:11px;color:var(--ts);line-height:1.4">${escEm(preview)}${preview.length>=160?'…':''}</td>
-    </tr>`;
-  });
-  html+='</tbody></table>';
-  html+=`<p class="em-tpl-hint" style="padding:10px 0 0">Mostrando ${filtered.length} / ${tpls.length} modelo(s). Edição dos modelos: Plan B / folha EMAIL_TEMPLATES.</p>`;
-  wrap.innerHTML=html;
 }
 
 function showInlineError(msg,type='err'){
